@@ -1,9 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup", "MetroBackup\MetroBackup.csproj", "{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup", "Services\MetroBackup\MetroBackup.csproj", "{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{D5BE0DBC-35DA-4DF3-A2CF-6518DC0460D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{1CF6FAAB-CE19-407C-A4DE-324D722336BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.Domain", "Domain\MetroBackup.Domain\MetroBackup.Domain.csproj", "{119038E9-0874-4FDF-860C-407305F52AFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +21,19 @@ Global
 		{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}.Release|Any CPU.Build.0 = Release|Any CPU
+		{119038E9-0874-4FDF-860C-407305F52AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{119038E9-0874-4FDF-860C-407305F52AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{119038E9-0874-4FDF-860C-407305F52AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{119038E9-0874-4FDF-860C-407305F52AFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295} = {D5BE0DBC-35DA-4DF3-A2CF-6518DC0460D9}
+		{119038E9-0874-4FDF-860C-407305F52AFA} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7871ED8C-0236-414A-B49A-A64C4FFE307C}
 	EndGlobalSection
 EndGlobal
