@@ -1,4 +1,5 @@
 ﻿using MetroBackup.Domain.ValueObjets;
+using System;
 
 namespace MetroBackup.Domain.Entities
 {
@@ -18,6 +19,7 @@ namespace MetroBackup.Domain.Entities
             string compactador,
             bool exibirNotificacao)
         {
+            Id = Guid.NewGuid();
             Descricao = descricao;
             Servidor = servidor;
             HoraConfig = horaConfig;
@@ -32,6 +34,7 @@ namespace MetroBackup.Domain.Entities
             ExibirNotificacao = exibirNotificacao;
         }
 
+        public Guid Id { get; private set; }
         public string Descricao { get; private set; }
         public Servidor Servidor { get; private set; }
         public HoraConfig HoraConfig { get; private set; }
