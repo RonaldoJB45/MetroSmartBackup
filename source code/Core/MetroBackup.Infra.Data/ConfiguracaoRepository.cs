@@ -1,13 +1,13 @@
 ﻿using MetroBackup.Domain.Entities;
 using MetroBackup.Domain.Interfaces;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using System.Linq;
+using System;
 
 namespace MetroBackup.Infra.Data
 {
-    public class BackupRepository : IBackupRepository
+    public class ConfiguracaoRepository : IConfiguracaoRepository
     {
         public List<Configuracao> ObterTodos()
         {
@@ -30,7 +30,7 @@ namespace MetroBackup.Infra.Data
             FileContext.SalvarConteudo(configuracoes);
         }
 
-        public void Atualizar(Configuracao configuracao)
+        public void Alterar(Configuracao configuracao)
         {
             var configuracoes = ObterTodos();
             configuracoes.RemoveAll(c => c.Id == configuracao.Id);

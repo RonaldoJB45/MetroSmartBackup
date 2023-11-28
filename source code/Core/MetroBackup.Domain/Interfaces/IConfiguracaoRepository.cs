@@ -1,14 +1,14 @@
 ﻿using MetroBackup.Domain.Entities;
-using System;
 using System.Collections.Generic;
+using System;
 
 namespace MetroBackup.Domain.Interfaces
 {
-    public interface IBackupRepository
+    public interface IConfiguracaoRepository
     {
         List<Configuracao> ObterTodos();
         Configuracao ObterPorId(Guid id);
         void Adicionar(Configuracao configuracao);
-        void Atualizar(Configuracao configuracao);
+        void Alterar(Configuracao configuracao);
     }
 }
