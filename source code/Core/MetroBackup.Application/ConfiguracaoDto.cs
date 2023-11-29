@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace MetroBackup.Application
 {
-    public class ConfiguracaoDto
+    public class ServidorDto
     {
-        public Guid Id { get; set; }
-        public string Descricao { get; set; }
+        public string NomeBanco { get; set; }
         public string IpBanco { get; set; }
         public string PortaBanco { get; set; }
         public string UsuarioBanco { get; set; }
         public string SenhaBanco { get; set; }
-        public string[] ListaBancos { get; set; }
+    }
+
+    public class ConfiguracaoDto
+    {
+        public Guid Id { get; set; }
+        public string Descricao { get; set; }
+        public List<ServidorDto> Servidores { get; set; }
         public string[] DiasDaSemana { get; set; }
         public bool UsarIntervaloHoras { get; set; }
         public int ValorIntervaloHoras { get; set; }

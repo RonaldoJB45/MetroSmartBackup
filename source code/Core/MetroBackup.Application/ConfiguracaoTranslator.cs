@@ -9,11 +9,17 @@ namespace MetroBackup.Application
     {
         internal static Configuracao ToConfiguracaoEntity(this ConfiguracaoDto configuracaoDto)
         {
-            var servidor = new Servidor(
-                configuracaoDto.IpBanco,
-                configuracaoDto.PortaBanco,
-                configuracaoDto.UsuarioBanco,
-                configuracaoDto.SenhaBanco);
+            List<Servidor> servidores = new List<Servidor>();
+
+            foreach (var servidorDto in configuracaoDto.Servidores)
+            {
+                servidores.Add(new Servidor(
+                    servidorDto.NomeBanco,
+                    servidorDto.IpBanco,
+                    servidorDto.PortaBanco,
+                    servidorDto.UsuarioBanco,
+                    servidorDto.SenhaBanco));
+            }
 
             var tipoConfiguracao = configuracaoDto.UsarIntervaloHoras ? TipoConfiguracao.Intervalo : TipoConfiguracao.Fixo;
 
@@ -30,10 +36,9 @@ namespace MetroBackup.Application
 
             var configuracao = new Configuracao(
                 configuracaoDto.Descricao,
-                servidor,
+                servidores,
                 horaConfig,
                 ftp,
-                configuracaoDto.ListaBancos,
                 configuracaoDto.DiasDaSemana,
                 configuracaoDto.Destinos,
                 configuracaoDto.UsarConfigApagar,
@@ -57,15 +62,25 @@ namespace MetroBackup.Application
         }
         internal static ConfiguracaoDto ToConfiguracaoDto(this Configuracao configuracao)
         {
+            List<ServidorDto> servidoresDto = new List<ServidorDto>();
+
+            foreach (var servidor in configuracao.Servidores)
+            {
+                servidoresDto.Add(new ServidorDto
+                {
+                    NomeBanco = servidor.NomeBanco,
+                    IpBanco = servidor.Endereco,
+                    PortaBanco = servidor.Porta,
+                    UsuarioBanco = servidor.Usuario,
+                    SenhaBanco = servidor.Senha
+                });
+            }
+
             return new ConfiguracaoDto
             {
                 Id = configuracao.Id,
                 Descricao = configuracao.Descricao,
-                IpBanco = configuracao.Servidor.Endereco,
-                PortaBanco = configuracao.Servidor.Porta,
-                UsuarioBanco = configuracao.Servidor.Usuario,
-                SenhaBanco = configuracao.Servidor.Senha,
-                ListaBancos = configuracao.ListaBancos,
+                Servidores = servidoresDto,
                 DiasDaSemana = configuracao.DiasDaSemana,
                 UsarIntervaloHoras = configuracao.HoraConfig.TipoConfiguracao == TipoConfiguracao.Intervalo,
                 ValorIntervaloHoras = configuracao.HoraConfig.Intervalo,

@@ -1,5 +1,6 @@
 ﻿using MetroBackup.Domain.ValueObjets;
 using System;
+using System.Collections.Generic;
 
 namespace MetroBackup.Domain.Entities
 {
@@ -7,10 +8,9 @@ namespace MetroBackup.Domain.Entities
     {
         public Configuracao(
             string descricao,
-            Servidor servidor,
+            List<Servidor> servidores,
             HoraConfig horaConfig,
             Ftp ftp,
-            string[] listaBancos,
             string[] diasDaSemana,
             string[] destinos,
             bool usarConfigApagar,
@@ -21,10 +21,9 @@ namespace MetroBackup.Domain.Entities
         {
             Id = Guid.NewGuid();
             Descricao = descricao;
-            Servidor = servidor;
+            Servidores = servidores;
             HoraConfig = horaConfig;
             Ftp = ftp;
-            ListaBancos = listaBancos;
             DiasDaSemana = diasDaSemana;
             Destinos = destinos;
             UsarConfigApagar = usarConfigApagar;
@@ -36,11 +35,10 @@ namespace MetroBackup.Domain.Entities
 
         public Guid Id { get; private set; }
         public string Descricao { get; private set; }
-        public Servidor Servidor { get; private set; }
         public HoraConfig HoraConfig { get; private set; }
         public Ftp Ftp { get; private set; }
 
-        public string[] ListaBancos { get; private set; }
+        public List<Servidor> Servidores { get; private set; }
         public string[] DiasDaSemana { get; private set; }
         public string[] Destinos { get; private set; }
 
