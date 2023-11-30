@@ -40,5 +40,10 @@ namespace MetroBackup.Application
             var configuracoes = _configuracaoRepository.ObterTodos();
             return configuracoes.ToConfiguracoesDto();
         }
+
+        public void Remover(Guid id)
+        {
+            _configuracaoRepository.Remover(id);
+        }
     }
 }

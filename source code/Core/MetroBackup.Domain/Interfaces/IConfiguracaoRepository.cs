@@ -10,5 +10,6 @@ namespace MetroBackup.Domain.Interfaces
         Configuracao ObterPorId(Guid id);
         void Adicionar(Configuracao configuracao);
         void Alterar(Configuracao configuracao);
+        void Remover(Guid id);
     }
 }

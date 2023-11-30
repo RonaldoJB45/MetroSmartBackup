@@ -7,8 +7,8 @@
 
   <ItemGroup>
     <PackageReference Include="Ionic.Zip" Version="1.9.1.8" />
-    <PackageReference Include="MySql.Data" Version="6.9.9" />
-    <PackageReference Include="MySqlBackup" Version="1.0.1" />
+    <PackageReference Include="MySql.Data" Version="8.2.0" />
+    <PackageReference Include="MySqlBackup.NET" Version="2.3.8" />
   </ItemGroup>
 
   <ItemGroup>

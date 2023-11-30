@@ -7,6 +7,7 @@ namespace MetroBackup.Domain.Entities
     public class Configuracao
     {
         public Configuracao(
+            Guid? id,
             string descricao,
             List<Servidor> servidores,
             HoraConfig horaConfig,
@@ -19,7 +20,7 @@ namespace MetroBackup.Domain.Entities
             string compactador,
             bool exibirNotificacao)
         {
-            Id = Guid.NewGuid();
+            Id = id ?? Guid.NewGuid();
             Descricao = descricao;
             Servidores = servidores;
             HoraConfig = horaConfig;

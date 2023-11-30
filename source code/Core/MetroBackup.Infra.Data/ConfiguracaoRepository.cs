@@ -9,9 +9,19 @@ namespace MetroBackup.Infra.Data
 {
     public class ConfiguracaoRepository : IConfiguracaoRepository
     {
+        private readonly FileContext _fileContext;
+
+        public ConfiguracaoRepository(FileContext fileContext)
+        {
+            _fileContext = fileContext;
+        }
+
         public List<Configuracao> ObterTodos()
         {
-            var conteudo = FileContext.ObterConteudo();
+            var conteudo = _fileContext.ObterConteudo();
+
+            if (conteudo == null) return new List<Configuracao>();
+
             var result = JsonConvert.DeserializeObject<List<Configuracao>>(Convert.ToString(conteudo));
             return result;
         }
@@ -27,7 +37,7 @@ namespace MetroBackup.Infra.Data
         {
             var configuracoes = ObterTodos();
             configuracoes.Add(configuracao);
-            FileContext.SalvarConteudo(configuracoes);
+            _fileContext.SalvarConteudo(configuracoes);
         }
 
         public void Alterar(Configuracao configuracao)
@@ -35,7 +45,14 @@ namespace MetroBackup.Infra.Data
             var configuracoes = ObterTodos();
             configuracoes.RemoveAll(c => c.Id == configuracao.Id);
             configuracoes.Add(configuracao);
-            FileContext.SalvarConteudo(configuracoes);
+            _fileContext.SalvarConteudo(configuracoes);
+        }
+
+        public void Remover(Guid id)
+        {
+            var configuracoes = ObterTodos();
+            configuracoes.RemoveAll(c => c.Id == id);
+            _fileContext.SalvarConteudo(configuracoes);
         }
     }
 }

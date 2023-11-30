@@ -3,29 +3,48 @@ using System.IO;
 
 namespace MetroBackup.Infra.Data
 {
-    static class FileContext
+    public class FileContext
     {
-        private static string caminhoArquivo { get; set; }
+        private readonly string _caminhoArquivo;
 
-        public static void DefinirCaminhoArquivo(string caminho) => caminhoArquivo = caminho;
-
-        public static dynamic ObterConteudo()
+        public FileContext(string caminhoArquivo)
         {
-            string texto = File.ReadAllText(caminhoArquivo);
+            if (!File.Exists(caminhoArquivo))
+            {
+                File.Create(caminhoArquivo).Close();
+            }
+
+            _caminhoArquivo = caminhoArquivo;
+        }
+
+        public FileContext(string caminhoArquivo, bool removeArquivo)
+        {
+            if (removeArquivo)
+                File.Delete(caminhoArquivo);
+
+            if (!File.Exists(caminhoArquivo))
+                File.Create(caminhoArquivo).Close();
+
+            _caminhoArquivo = caminhoArquivo;
+        }
+
+        public dynamic ObterConteudo()
+        {
+            string texto = File.ReadAllText(_caminhoArquivo);
             return JsonConvert.DeserializeObject(texto);
         }
 
-        public static dynamic Listar<T>()
+        public dynamic Listar<T>()
         {
-            string texto = File.ReadAllText(caminhoArquivo);
+            string texto = File.ReadAllText(_caminhoArquivo);
             return JsonConvert.DeserializeObject<T>(texto);
         }
 
-        public static void SalvarConteudo(dynamic conteudo, bool identar = true)
+        public void SalvarConteudo(dynamic conteudo, bool identar = true)
         {
             Formatting formatacao = identar ? Formatting.Indented : Formatting.None;
             string texto = JsonConvert.SerializeObject(conteudo, formatacao);
-            File.WriteAllText(caminhoArquivo, texto);
+            File.WriteAllText(_caminhoArquivo, texto);
         }
     }
 }

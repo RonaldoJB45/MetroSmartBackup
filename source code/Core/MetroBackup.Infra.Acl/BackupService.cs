@@ -41,6 +41,9 @@ namespace MetroBackup.Infra.Acl
 
         static void SalvarArquivo(MemoryStream memoryStream, string nomeBanco, string destino)
         {
+            if (!Directory.Exists(destino))
+                Directory.CreateDirectory(destino);
+
             string pathDestinoArquivo = destino + "\\" + Formatar(nomeBanco, ".sql");
 
             using (FileStream fileStream = new FileStream(pathDestinoArquivo, FileMode.Create, FileAccess.Write))
@@ -50,7 +53,7 @@ namespace MetroBackup.Infra.Acl
         }
         static string Formatar(string nome, string extensao)
         {
-            return nome + "_" + DateTime.Now.ToString("ddMMyyyyHHmmssfff") + extensao;
+            return nome + "_" + DateTime.Now.ToString("ddMMyyyyHHmmssfff") + "." + extensao;
         }
     }
 }

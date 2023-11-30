@@ -13,7 +13,8 @@ namespace MetroBackup.Application
 
         public void Executar(ConfiguracaoDto dto)
         {
-            _backupService.Executar(null);
+            var configuracao = dto.ToConfiguracaoEntity();
+            _backupService.Executar(configuracao);
         }
     }
 }

@@ -35,6 +35,7 @@ namespace MetroBackup.Application
                 configuracaoDto.PasswordFtp);
 
             var configuracao = new Configuracao(
+                configuracaoDto.Id,
                 configuracaoDto.Descricao,
                 servidores,
                 horaConfig,
@@ -62,6 +63,8 @@ namespace MetroBackup.Application
         }
         internal static ConfiguracaoDto ToConfiguracaoDto(this Configuracao configuracao)
         {
+            if (configuracao == null) return null;
+
             List<ServidorDto> servidoresDto = new List<ServidorDto>();
 
             foreach (var servidor in configuracao.Servidores)
