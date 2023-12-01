@@ -45,12 +45,11 @@ namespace MetroBackup.Application.Tests
             Guid id = Guid.NewGuid();
             var configuracaoDto = GerarConfiguracao(id, null);
             configuracaoAppService.Adicionar(configuracaoDto);
-            configuracaoDto = configuracaoAppService.ObterPorId(id);
 
             var backupService = new BackupService();
-            var backupAppService = new BackupAppService(backupService);
+            var backupAppService = new BackupAppService(backupService, configuracaoRepository);
 
-            backupAppService.Executar(configuracaoDto);
+            backupAppService.Executar(id);
 
             Assert.NotNull(configuracaoDto);
         }

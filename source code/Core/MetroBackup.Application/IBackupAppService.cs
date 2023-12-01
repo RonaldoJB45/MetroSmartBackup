@@ -1,7 +1,9 @@
-﻿namespace MetroBackup.Application
+﻿using System;
+
+namespace MetroBackup.Application
 {
     public interface IBackupAppService
     {
-        void Executar(ConfiguracaoDto dto);
+        void Executar(Guid id);
     }
 }

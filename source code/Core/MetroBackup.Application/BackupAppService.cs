@@ -1,19 +1,24 @@
 ﻿using MetroBackup.Domain.Interfaces;
+using System;
 
 namespace MetroBackup.Application
 {
     public class BackupAppService : IBackupAppService
     {
         private readonly IBackupService _backupService;
+        private readonly IConfiguracaoRepository _configuracaoRepository;
 
-        public BackupAppService(IBackupService backupService)
+        public BackupAppService(
+            IBackupService backupService,
+            IConfiguracaoRepository configuracaoRepository)
         {
             _backupService = backupService;
+            _configuracaoRepository = configuracaoRepository;
         }
 
-        public void Executar(ConfiguracaoDto dto)
+        public void Executar(Guid id)
         {
-            var configuracao = dto.ToConfiguracaoEntity();
+            var configuracao = _configuracaoRepository.ObterPorId(id);
             _backupService.Executar(configuracao);
         }
     }
