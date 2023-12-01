@@ -1,4 +1,5 @@
-﻿using MetroBackup.Infra.Acl;
+﻿using MetroBackup.Domain.Services;
+using MetroBackup.Infra.Acl;
 using MetroBackup.Infra.Data;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,14 @@ namespace MetroBackup.Application.Tests
             var configuracaoDto = GerarConfiguracao(id, null);
             configuracaoAppService.Adicionar(configuracaoDto);
 
-            var backupService = new BackupService();
+            var _progressReporter = new ProgressReporter();
+
+            _progressReporter.ProgressChanged += (progress) =>
+            {
+                System.Diagnostics.Debug.WriteLine(progress);
+            };
+
+            var backupService = new BackupService(_progressReporter);
             var backupAppService = new BackupAppService(backupService, configuracaoRepository);
 
             backupAppService.Executar(id);

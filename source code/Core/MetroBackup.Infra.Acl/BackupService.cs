@@ -8,9 +8,16 @@ namespace MetroBackup.Infra.Acl
 {
     public class BackupService : IBackupService
     {
+        private readonly IProgressReporter _progressReporter;
+
+        public BackupService(IProgressReporter progressReporter)
+        {
+            _progressReporter = progressReporter;
+        }
+
         public void Executar(Configuracao configuracao)
         {
-            var mySqlService = new MySqlService();
+            var mySqlService = new MySqlService(_progressReporter);
 
             foreach (var servidor in configuracao.Servidores)
             {
