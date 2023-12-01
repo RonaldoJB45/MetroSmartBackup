@@ -31,11 +31,19 @@ namespace MetroBackup.Infra.Acl
 
         static void Compactar(MemoryStream ms, string nomeBanco, string destino, string compactador)
         {
-            using (ZipFile zip = new ZipFile())
+            if (!Directory.Exists(destino))
+                Directory.CreateDirectory(destino);
+
+            byte[] data = ms.ToArray();
+
+            using (MemoryStream stream = new MemoryStream(data))
             {
-                zip.AddEntry(nomeBanco, ms);
-                string pathDestinoArquivo = destino + "\\" + Formatar(nomeBanco, compactador);
-                zip.Save(pathDestinoArquivo);
+                using (ZipFile zip = new ZipFile())
+                {
+                    string pathDestinoArquivo = destino + "\\" + Formatar(nomeBanco, compactador);
+                    zip.AddEntry(Formatar(nomeBanco, "sql"), stream);
+                    zip.Save(pathDestinoArquivo);
+                }
             }
         }
 
@@ -44,7 +52,7 @@ namespace MetroBackup.Infra.Acl
             if (!Directory.Exists(destino))
                 Directory.CreateDirectory(destino);
 
-            string pathDestinoArquivo = destino + "\\" + Formatar(nomeBanco, ".sql");
+            string pathDestinoArquivo = destino + "\\" + Formatar(nomeBanco, "sql");
 
             using (FileStream fileStream = new FileStream(pathDestinoArquivo, FileMode.Create, FileAccess.Write))
             {
