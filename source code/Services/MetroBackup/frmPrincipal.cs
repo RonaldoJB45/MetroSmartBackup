@@ -1,5 +1,6 @@
 ﻿using MetroFramework.Forms;
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace MetroBackup
@@ -13,6 +14,38 @@ namespace MetroBackup
 
         private void frmPrincipal_Load(object sender, EventArgs e)
         {
+            RenderizarLogo();
+            HabilitaBotoesPrincipais(Novo: true);
+            ObterListaConfiguracoes();
+        }
+
+        private void RenderizarLogo()
+        {
+            string path = Application.StartupPath + "//images//logo.png";
+
+            if (new FileInfo(path).Exists)
+                picLogo.ImageLocation = path;
+        }
+
+        public void HabilitaBotoesPrincipais(
+            bool Novo = false,
+            bool Editar = false,
+            bool Salvar = false,
+            bool Excluir = false,
+            bool Cancelar = false,
+            bool Backup = false)
+        {
+            btnNovo.Enabled = Novo;
+            btnEditar.Enabled = Editar;
+            btnSalvar.Enabled = Salvar;
+            btnExcluir.Enabled = Excluir;
+            btnCancelar.Enabled = Cancelar;
+            btnBackup.Enabled = Backup;
+        }
+
+        private void ObterListaConfiguracoes()
+        {
+
         }
 
         private void btnSelecionarDestino_Click(object sender, EventArgs e)

@@ -206,6 +206,12 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\MetroBackup.ApplicationService\MetroBackup.ApplicationService.csproj">
+      <Project>{a7582989-6a26-4895-b190-a28d03579162}</Project>
+      <Name>MetroBackup.ApplicationService</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
