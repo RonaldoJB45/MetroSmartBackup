@@ -1,4 +1,6 @@
-﻿using MetroFramework.Forms;
+﻿using MetroBackup.ApplicationService;
+using MetroFramework;
+using MetroFramework.Forms;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -7,16 +9,19 @@ namespace MetroBackup
 {
     public partial class frmPrincipal : MetroForm
     {
-        public frmPrincipal()
+        private readonly IConfiguracaoAppService _configuracaoAppService;
+
+        public frmPrincipal(IConfiguracaoAppService configuracaoAppService)
         {
             InitializeComponent();
+            _configuracaoAppService = configuracaoAppService;
         }
 
         private void frmPrincipal_Load(object sender, EventArgs e)
         {
             RenderizarLogo();
             HabilitaBotoesPrincipais(Novo: true);
-            ObterListaConfiguracoes();
+            PreencherListaConfiguracoes();
         }
 
         private void RenderizarLogo()
@@ -43,39 +48,14 @@ namespace MetroBackup
             btnBackup.Enabled = Backup;
         }
 
-        private void ObterListaConfiguracoes()
+        private void PreencherListaConfiguracoes()
         {
+            dgLista.Rows.Clear();
 
-        }
+            var configuracoes = _configuracaoAppService.ObterTodos();
 
-        private void btnSelecionarDestino_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void txtDescricao_KeyPress(object sender, KeyPressEventArgs e)
-        {
-        }
-
-        private void txtPorta_KeyPress(object sender, KeyPressEventArgs e)
-        {
-        }
-
-        private void txtIntervalo_KeyPress(object sender, KeyPressEventArgs e)
-        {
-        }
-
-        private void txtDiasApagar_KeyPress(object sender, KeyPressEventArgs e)
-        {
-        }
-        private void dgLista_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-        }
-
-        private void dgDestinos_DoubleClick(object sender, EventArgs e)
-        {
-        }
-        private void btnConectar_Click(object sender, EventArgs e)
-        {
+            foreach (var configuracao in configuracoes)
+                dgLista.Rows.Add(configuracao.Descricao);
         }
 
         #region Botoes Principais
@@ -115,6 +95,36 @@ namespace MetroBackup
 
         #endregion
 
+        private void btnSelecionarDestino_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                if (fbd.ShowDialog() == DialogResult.OK)
+                {
+                    foreach (DataGridViewRow item in dgDestinos.Rows)
+                    {
+                        if (fbd.SelectedPath == item.Cells[0].Value.ToString())
+                        {
+                            MetroMessageBox.Show(this, "Já foi adicionado esse destino para backup. Favor selecionar outro destino!", "Atenção", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            return;
+                        }
+                    }
+                    dgDestinos.Rows.Add(fbd.SelectedPath);
+                }
+            }
+        }
+
+        private void dgLista_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+        }
+
+        private void dgDestinos_DoubleClick(object sender, EventArgs e)
+        {
+        }
+        private void btnConectar_Click(object sender, EventArgs e)
+        {
+        }
+
         private void btnBackup_Click(object sender, EventArgs e)
         {
         }
@@ -137,6 +147,30 @@ namespace MetroBackup
 
         private void btnRestore_Click(object sender, EventArgs e)
         {
+        }
+
+
+        private void txtDescricao_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.KeyChar = Char.ToUpper(e.KeyChar);
+        }
+
+        private void txtPorta_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != (char)8)
+                e.Handled = true;
+        }
+
+        private void txtIntervalo_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != (char)8)
+                e.Handled = true;
+        }
+
+        private void txtDiasApagar_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != (char)8)
+                e.Handled = true;
         }
     }
 }

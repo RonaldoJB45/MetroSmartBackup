@@ -1,4 +1,7 @@
-﻿using System;
+﻿using MetroBackup.ApplicationService;
+using MetroBackup.Domain.Interfaces;
+using MetroBackup.Infra.Data;
+using System;
 using System.Windows.Forms;
 
 namespace MetroBackup
@@ -13,7 +16,13 @@ namespace MetroBackup
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmPrincipal());
-        }        
+
+            string caminhoArquivo = Application.StartupPath + @"\config.json";
+            FileContext fileContext = new FileContext(caminhoArquivo);
+            IConfiguracaoRepository configuracaoRepository = new ConfiguracaoRepository(fileContext);
+            IConfiguracaoAppService configuracaoAppService = new ConfiguracaoAppService(configuracaoRepository);
+
+            Application.Run(new frmPrincipal(configuracaoAppService));
+        }
     }
 }
