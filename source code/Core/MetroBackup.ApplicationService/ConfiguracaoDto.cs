@@ -3,18 +3,14 @@ using System.Collections.Generic;
 
 namespace MetroBackup.ApplicationService
 {
-    public class ServidorDto
-    {
-        public string NomeBanco { get; set; }
-        public string IpBanco { get; set; }
-        public string PortaBanco { get; set; }
-        public string UsuarioBanco { get; set; }
-        public string SenhaBanco { get; set; }
-    }
-
     public class ConfiguracaoDto
     {
-        public Guid Id { get; set; }
+        public ConfiguracaoDto()
+        {
+            Servidores = new List<ServidorDto>();
+        }
+
+        public Guid? Id { get; set; }
         public string Descricao { get; set; }
         public List<ServidorDto> Servidores { get; set; }
         public string[] DiasDaSemana { get; set; }

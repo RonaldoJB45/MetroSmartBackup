@@ -1,5 +1,7 @@
-﻿using MetroBackup.Domain.Interfaces;
+﻿using MetroBackup.Domain.ValueObjets;
+using MetroBackup.Domain.Interfaces;
 using System.Collections.Generic;
+using MetroBackup.Domain.Enums;
 using System;
 
 namespace MetroBackup.ApplicationService
@@ -21,10 +23,49 @@ namespace MetroBackup.ApplicationService
 
         public void Alterar(ConfiguracaoDto configuracaoDto)
         {
-            var configuracao = _configuracaoRepository.ObterPorId(Guid.NewGuid());
+            var configuracao = _configuracaoRepository.ObterPorId(configuracaoDto.Id.Value);
 
             if (configuracao != null)
             {
+                List<Servidor> servidores = new List<Servidor>();
+
+                foreach (var servidorDto in configuracaoDto.Servidores)
+                {
+                    servidores.Add(new Servidor(
+                        servidorDto.NomeBanco,
+                        servidorDto.IpBanco,
+                        servidorDto.PortaBanco,
+                        servidorDto.UsuarioBanco,
+                        servidorDto.SenhaBanco));
+                }
+
+                var tipoConfiguracao = configuracaoDto.UsarIntervaloHoras ? TipoConfiguracao.Intervalo : TipoConfiguracao.Fixo;
+
+                var horaConfig = new HoraConfig(
+                    tipoConfiguracao,
+                    configuracaoDto.ValorIntervaloHoras,
+                    configuracaoDto.ValorHoraFixa);
+
+                var ftp = new Ftp(
+                    configuracaoDto.UtilizarHostFtp,
+                    configuracaoDto.HostFtp,
+                    configuracaoDto.UserFtp,
+                    configuracaoDto.PasswordFtp);
+
+                configuracao.Alterar(
+                    configuracaoDto.Descricao,
+                    servidores,
+                    horaConfig,
+                    ftp,
+                    configuracaoDto.DiasDaSemana,
+                    configuracaoDto.Destinos,
+                    configuracaoDto.UsarConfigApagar,
+                    configuracaoDto.QtdeDiasParaApagar,
+                    configuracaoDto.Compactar,
+                    configuracaoDto.Compactador,
+                    configuracaoDto.MostrarJanelaNotificacao
+                    );
+
                 _configuracaoRepository.Alterar(configuracao);
             }
         }

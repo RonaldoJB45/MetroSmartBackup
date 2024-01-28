@@ -48,5 +48,31 @@ namespace MetroBackup.Domain.Entities
         public bool Compactar { get; private set; }
         public string Compactador { get; private set; }
         public bool ExibirNotificacao { get; private set; }
+
+        public void Alterar(
+            string descricao,
+            List<Servidor> servidores,
+            HoraConfig horaConfig,
+            Ftp ftp,
+            string[] diasDaSemana,
+            string[] destinos,
+            bool usarConfigApagar,
+            int qtdeDiasParaApagar,
+            bool compactar,
+            string compactador,
+            bool exibirNotificacao)
+        {
+            Descricao = descricao;
+            Servidores = servidores;
+            HoraConfig = horaConfig;
+            Ftp = ftp;
+            DiasDaSemana = diasDaSemana;
+            Destinos = destinos;
+            UsarConfigApagar = usarConfigApagar;
+            QtdeDiasParaApagar = qtdeDiasParaApagar;
+            Compactar = compactar;
+            Compactador = compactador;
+            ExibirNotificacao = exibirNotificacao;
+        }
     }
 }
