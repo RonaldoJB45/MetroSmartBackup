@@ -21,13 +21,6 @@ namespace MetroBackup.ApplicationService
                     servidorDto.SenhaBanco));
             }
 
-            var tipoConfiguracao = configuracaoDto.UsarIntervaloHoras ? TipoConfiguracao.Intervalo : TipoConfiguracao.Fixo;
-
-            var horaConfig = new HoraConfig(
-                tipoConfiguracao,
-                configuracaoDto.ValorIntervaloHoras,
-                configuracaoDto.ValorHoraFixa);
-
             var ftp = new Ftp(
                 configuracaoDto.UtilizarHostFtp,
                 configuracaoDto.HostFtp,
@@ -38,8 +31,11 @@ namespace MetroBackup.ApplicationService
                 configuracaoDto.Id,
                 configuracaoDto.Descricao,
                 servidores,
-                horaConfig,
                 ftp,
+                configuracaoDto.UsarIntervaloHoras,
+                configuracaoDto.UsarHoraFixa,
+                configuracaoDto.ValorIntervaloHoras,
+                configuracaoDto.ValorHoraFixa,
                 configuracaoDto.DiasDaSemana,
                 configuracaoDto.Destinos,
                 configuracaoDto.UsarConfigApagar,
@@ -85,10 +81,10 @@ namespace MetroBackup.ApplicationService
                 Descricao = configuracao.Descricao,
                 Servidores = servidoresDto,
                 DiasDaSemana = configuracao.DiasDaSemana,
-                UsarIntervaloHoras = configuracao.HoraConfig.TipoConfiguracao == TipoConfiguracao.Intervalo,
-                ValorIntervaloHoras = configuracao.HoraConfig.Intervalo,
-                UsarHoraFixa = configuracao.HoraConfig.TipoConfiguracao == TipoConfiguracao.Fixo,
-                ValorHoraFixa = configuracao.HoraConfig.HoraFixa,
+                UsarIntervaloHoras = configuracao.UsarIntervaloHoras,
+                ValorIntervaloHoras = configuracao.IntervaloHora,
+                UsarHoraFixa = configuracao.UsarHoraFixa,
+                ValorHoraFixa = configuracao.HoraFixa,
                 UsarConfigApagar = configuracao.UsarConfigApagar,
                 QtdeDiasParaApagar = configuracao.QtdeDiasParaApagar,
                 Compactar = configuracao.Compactar,

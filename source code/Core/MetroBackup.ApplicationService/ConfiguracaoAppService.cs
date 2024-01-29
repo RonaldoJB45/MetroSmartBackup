@@ -39,13 +39,6 @@ namespace MetroBackup.ApplicationService
                         servidorDto.SenhaBanco));
                 }
 
-                var tipoConfiguracao = configuracaoDto.UsarIntervaloHoras ? TipoConfiguracao.Intervalo : TipoConfiguracao.Fixo;
-
-                var horaConfig = new HoraConfig(
-                    tipoConfiguracao,
-                    configuracaoDto.ValorIntervaloHoras,
-                    configuracaoDto.ValorHoraFixa);
-
                 var ftp = new Ftp(
                     configuracaoDto.UtilizarHostFtp,
                     configuracaoDto.HostFtp,
@@ -55,8 +48,11 @@ namespace MetroBackup.ApplicationService
                 configuracao.Alterar(
                     configuracaoDto.Descricao,
                     servidores,
-                    horaConfig,
                     ftp,
+                    configuracaoDto.UsarIntervaloHoras,
+                    configuracaoDto.UsarHoraFixa,
+                    configuracaoDto.ValorIntervaloHoras,
+                    configuracaoDto.ValorHoraFixa,
                     configuracaoDto.DiasDaSemana,
                     configuracaoDto.Destinos,
                     configuracaoDto.UsarConfigApagar,

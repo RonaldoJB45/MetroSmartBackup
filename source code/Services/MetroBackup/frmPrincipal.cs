@@ -88,8 +88,6 @@ namespace MetroBackup
                 return;
             }
 
-            dgLista.Rows.RemoveAt(dgLista.SelectedCells[0].RowIndex);
-
             mPnlPrincipal.Enabled = true;
             dgLista.Enabled = false;
 
@@ -149,6 +147,12 @@ namespace MetroBackup
                 _configuracaoAppService.Adicionar(configuracaoDto);
 
             PreencherListaConfiguracoes();
+
+            LimpaCampos();
+            mPnlPrincipal.Enabled = false;
+            dgLista.Enabled = true;
+
+            HabilitaBotoesPrincipais(Novo: true);
         }
 
         private void btnExcluir_Click(object sender, EventArgs e)
@@ -167,6 +171,8 @@ namespace MetroBackup
                     LimpaCampos();
                 }
             }
+
+            PreencherListaConfiguracoes();
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)

@@ -10,8 +10,11 @@ namespace MetroBackup.Domain.Entities
             Guid? id,
             string descricao,
             List<Servidor> servidores,
-            HoraConfig horaConfig,
             Ftp ftp,
+            bool usarIntervaloHoras,
+            bool usarHoraFixa,
+            int intervaloHora,
+            string horaFixa,
             string[] diasDaSemana,
             string[] destinos,
             bool usarConfigApagar,
@@ -23,7 +26,10 @@ namespace MetroBackup.Domain.Entities
             Id = id ?? Guid.NewGuid();
             Descricao = descricao;
             Servidores = servidores;
-            HoraConfig = horaConfig;
+            UsarIntervaloHoras = usarIntervaloHoras;
+            UsarHoraFixa = usarHoraFixa;
+            IntervaloHora = intervaloHora;
+            HoraFixa = horaFixa;
             Ftp = ftp;
             DiasDaSemana = diasDaSemana;
             Destinos = destinos;
@@ -36,7 +42,13 @@ namespace MetroBackup.Domain.Entities
 
         public Guid Id { get; private set; }
         public string Descricao { get; private set; }
-        public HoraConfig HoraConfig { get; private set; }
+
+        public bool UsarIntervaloHoras { get; private set; }
+        public bool UsarHoraFixa { get; private set; }
+
+        public int IntervaloHora { get; private set; }
+        public string HoraFixa { get; private set; }
+
         public Ftp Ftp { get; private set; }
 
         public List<Servidor> Servidores { get; private set; }
@@ -52,8 +64,11 @@ namespace MetroBackup.Domain.Entities
         public void Alterar(
             string descricao,
             List<Servidor> servidores,
-            HoraConfig horaConfig,
             Ftp ftp,
+            bool usarIntervaloHoras,
+            bool usarHoraFixa,
+            int intervaloHora,
+            string horaFixa,
             string[] diasDaSemana,
             string[] destinos,
             bool usarConfigApagar,
@@ -64,8 +79,11 @@ namespace MetroBackup.Domain.Entities
         {
             Descricao = descricao;
             Servidores = servidores;
-            HoraConfig = horaConfig;
             Ftp = ftp;
+            UsarIntervaloHoras = usarIntervaloHoras;
+            UsarHoraFixa = usarHoraFixa;
+            IntervaloHora = intervaloHora;
+            HoraFixa = horaFixa;
             DiasDaSemana = diasDaSemana;
             Destinos = destinos;
             UsarConfigApagar = usarConfigApagar;
