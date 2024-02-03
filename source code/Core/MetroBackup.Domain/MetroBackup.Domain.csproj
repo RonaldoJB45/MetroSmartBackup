@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <LangVersion>8.0</LangVersion>
-</PropertyGroup>
+  </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -47,6 +47,7 @@
     <Compile Include="Entities\Configuracao.cs" />
     <Compile Include="Enums\TipoConfiguracao.cs" />
     <Compile Include="Interfaces\IBackupService.cs" />
+    <Compile Include="Interfaces\IBancoDadosService.cs" />
     <Compile Include="Interfaces\IConfiguracaoRepository.cs" />
     <Compile Include="Interfaces\IProgressReporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

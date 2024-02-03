@@ -195,6 +195,10 @@
       <Project>{ED5F7425-5577-46A6-BB55-F431BFE96F5F}</Project>
       <Name>MetroBackup.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Core\MetroBackup.Infra.Acl\MetroBackup.Infra.Acl.csproj">
+      <Project>{F60F12BC-56F1-4935-9B4A-35745975C767}</Project>
+      <Name>MetroBackup.Infra.Acl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Core\MetroBackup.Infra.Data\MetroBackup.Infra.Data.csproj">
       <Project>{47D447DB-ED4D-4BE9-AA7A-2A988756FFDA}</Project>
       <Name>MetroBackup.Infra.Data</Name>

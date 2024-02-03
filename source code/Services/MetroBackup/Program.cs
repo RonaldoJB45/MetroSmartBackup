@@ -1,5 +1,6 @@
 ﻿using MetroBackup.ApplicationService;
 using MetroBackup.Domain.Interfaces;
+using MetroBackup.Infra.Acl;
 using MetroBackup.Infra.Data;
 using System;
 using System.Windows.Forms;
@@ -22,7 +23,10 @@ namespace MetroBackup
             IConfiguracaoRepository configuracaoRepository = new ConfiguracaoRepository(fileContext);
             IConfiguracaoAppService configuracaoAppService = new ConfiguracaoAppService(configuracaoRepository);
 
-            Application.Run(new frmPrincipal(configuracaoAppService));
+            IBancoDadosService bancoDadosService = new BancoDadosService();
+            IBancoDadosAppService bancoDadosAppService = new BancoDadosAppService(bancoDadosService);
+
+            Application.Run(new frmPrincipal(configuracaoAppService, bancoDadosAppService));
         }
     }
 }

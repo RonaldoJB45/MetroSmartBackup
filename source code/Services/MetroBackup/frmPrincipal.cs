@@ -13,13 +13,15 @@ namespace MetroBackup
     public partial class frmPrincipal : MetroForm
     {
         private readonly IConfiguracaoAppService _configuracaoAppService;
+        private readonly IBancoDadosAppService _bancoDadosAppService;
 
         private Guid? ConfiguracaoSelecionadaId = null;
 
-        public frmPrincipal(IConfiguracaoAppService configuracaoAppService)
+        public frmPrincipal(IConfiguracaoAppService configuracaoAppService, IBancoDadosAppService bancoDadosAppService)
         {
             InitializeComponent();
             _configuracaoAppService = configuracaoAppService;
+            _bancoDadosAppService = bancoDadosAppService;
         }
 
         private void frmPrincipal_Load(object sender, EventArgs e)
@@ -369,6 +371,36 @@ namespace MetroBackup
         }
         private void btnConectar_Click(object sender, EventArgs e)
         {
+            string ip = txtIp.Text;
+            string porta = txtPorta.Text;
+            string usuario = txtUsuario.Text;
+            string senha = txtSenha.Text;
+
+            IEnumerable<string> bancos = _bancoDadosAppService.ObterTodos(
+                ip,
+                porta,
+                "information_schema",
+                usuario,
+                senha);
+
+            MetroFramework.Controls.MetroCheckBox chk;
+
+            int i = 0;
+
+            foreach (var banco in bancos)
+            {
+                i++;
+                chk = new MetroFramework.Controls.MetroCheckBox();
+                chk.AutoSize = true;
+                chk.Location = new Point(10, (((i + 1) * 20)) - 30);
+                chk.Name = "chk" + banco;
+                chk.Size = new Size(113, 15);
+                chk.TabIndex = 2 + i;
+                chk.Text = banco;
+                chk.UseVisualStyleBackColor = true;
+                chk.Style = MetroFramework.MetroColorStyle.Orange;
+                mPnlDataBase.Controls.Add(chk);
+            }
         }
 
         private void btnBackup_Click(object sender, EventArgs e)

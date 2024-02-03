@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackupService.cs" />
+    <Compile Include="BancoDadosService.cs" />
     <Compile Include="MySqlService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
