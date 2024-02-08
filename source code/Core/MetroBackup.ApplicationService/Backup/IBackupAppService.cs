@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MetroBackup.ApplicationService
+namespace MetroBackup.ApplicationService.Backup
 {
     public interface IBackupAppService
     {

@@ -1,7 +1,7 @@
 ﻿using MetroBackup.Domain.Interfaces;
 using System;
 
-namespace MetroBackup.ApplicationService
+namespace MetroBackup.ApplicationService.Backup
 {
     public class BackupAppService : IBackupAppService
     {

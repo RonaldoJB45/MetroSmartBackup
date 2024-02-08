@@ -1,4 +1,4 @@
-﻿namespace MetroBackup.ApplicationService
+﻿namespace MetroBackup.ApplicationService.Configuracoes
 {
     public class ServidorDto
     {

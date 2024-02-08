@@ -3,7 +3,7 @@ using MetroBackup.Domain.Enums;
 using MetroBackup.Domain.ValueObjets;
 using System.Collections.Generic;
 
-namespace MetroBackup.ApplicationService
+namespace MetroBackup.ApplicationService.Configuracoes
 {
     internal static class ConfiguracaoTranslator
     {

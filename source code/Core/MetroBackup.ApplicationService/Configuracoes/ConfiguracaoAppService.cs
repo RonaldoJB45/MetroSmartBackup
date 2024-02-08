@@ -1,10 +1,9 @@
 ﻿using MetroBackup.Domain.ValueObjets;
 using MetroBackup.Domain.Interfaces;
 using System.Collections.Generic;
-using MetroBackup.Domain.Enums;
 using System;
 
-namespace MetroBackup.ApplicationService
+namespace MetroBackup.ApplicationService.Configuracoes
 {
     public class ConfiguracaoAppService : IConfiguracaoAppService
     {

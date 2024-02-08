@@ -41,16 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackupAppService.cs" />
-    <Compile Include="BancoDadosAppService.cs" />
-    <Compile Include="ConfiguracaoAppService.cs" />
-    <Compile Include="ConfiguracaoDto.cs" />
-    <Compile Include="ConfiguracaoTranslator.cs" />
-    <Compile Include="IBackupAppService.cs" />
-    <Compile Include="IBancoDadosAppService.cs" />
-    <Compile Include="IConfiguracaoAppService.cs" />
+    <Compile Include="Backup\BackupAppService.cs" />
+    <Compile Include="BancoDados\BancoDadosAppService.cs" />
+    <Compile Include="Configuracoes\ConfiguracaoAppService.cs" />
+    <Compile Include="Configuracoes\ConfiguracaoDto.cs" />
+    <Compile Include="Configuracoes\ConfiguracaoTranslator.cs" />
+    <Compile Include="Backup\IBackupAppService.cs" />
+    <Compile Include="BancoDados\IBancoDadosAppService.cs" />
+    <Compile Include="Configuracoes\IConfiguracaoAppService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServidorDto.cs" />
+    <Compile Include="Configuracoes\ServidorDto.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetroBackup.Domain\MetroBackup.Domain.csproj">

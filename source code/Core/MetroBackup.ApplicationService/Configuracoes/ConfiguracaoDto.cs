@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MetroBackup.ApplicationService
+namespace MetroBackup.ApplicationService.Configuracoes
 {
     public class ConfiguracaoDto
     {

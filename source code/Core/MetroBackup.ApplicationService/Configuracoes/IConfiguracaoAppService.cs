@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
-namespace MetroBackup.ApplicationService
+namespace MetroBackup.ApplicationService.Configuracoes
 {
     public interface IConfiguracaoAppService
     {

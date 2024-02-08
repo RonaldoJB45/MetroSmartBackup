@@ -1,12 +1,13 @@
-﻿using MetroBackup.ApplicationService;
-using MetroFramework;
-using MetroFramework.Forms;
-using System;
+﻿using MetroBackup.ApplicationService.Configuracoes;
+using MetroBackup.ApplicationService.BancoDados;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
+using MetroFramework.Forms;
 using System.Windows.Forms;
+using MetroFramework;
+using System.Drawing;
+using System.Linq;
+using System.IO;
+using System;
 
 namespace MetroBackup
 {
@@ -407,7 +408,7 @@ namespace MetroBackup
                 dgDestinos.ClearSelection();
                 chkMostrarNotificacao.Checked = configuracaoDto.MostrarJanelaNotificacao;
                 chkUtilizarHostFtp.Checked = configuracaoDto.UtilizarHostFtp;
-                
+
                 txtHostFtp.Text = configuracaoDto.HostFtp;
                 txtUserFtp.Text = configuracaoDto.UserFtp;
                 txtPasswordFtp.Text = configuracaoDto.PasswordFtp;

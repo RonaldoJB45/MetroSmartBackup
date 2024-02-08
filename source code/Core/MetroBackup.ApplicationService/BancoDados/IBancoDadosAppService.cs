@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MetroBackup.ApplicationService
+namespace MetroBackup.ApplicationService.BancoDados
 {
     public interface IBancoDadosAppService
     {
