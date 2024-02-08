@@ -271,6 +271,39 @@ namespace MetroBackup
             txtPasswordFtp.Clear();
         }
 
+        private void CarregarBancos(
+            string ip,
+            string porta,
+            string usuario,
+            string senha)
+        {
+            IEnumerable<string> bancos = _bancoDadosAppService.ObterTodos(
+                ip,
+                porta,
+                "information_schema",
+                usuario,
+                senha);
+
+            MetroFramework.Controls.MetroCheckBox chk;
+
+            int i = 0;
+
+            foreach (var banco in bancos)
+            {
+                i++;
+                chk = new MetroFramework.Controls.MetroCheckBox();
+                chk.AutoSize = true;
+                chk.Location = new Point(10, (((i + 1) * 20)) - 30);
+                chk.Name = "chk" + banco;
+                chk.Size = new Size(113, 15);
+                chk.TabIndex = 2 + i;
+                chk.Text = banco;
+                chk.UseVisualStyleBackColor = true;
+                chk.Style = MetroColorStyle.Orange;
+                mPnlDataBase.Controls.Add(chk);
+            }
+        }
+
         #endregion
 
         #region BancoDeDados
@@ -313,14 +346,31 @@ namespace MetroBackup
 
                 ConfiguracaoSelecionadaId = configuracaoDto.Id;
 
-                var servidor = configuracaoDto.Servidores.FirstOrDefault();
+                var configuracaoServidor = configuracaoDto.Servidores.FirstOrDefault();
 
-                if (servidor != null)
+                if (configuracaoServidor != null)
                 {
-                    txtIp.Text = servidor.IpBanco;
-                    txtPorta.Text = servidor.PortaBanco;
-                    txtUsuario.Text = servidor.UsuarioBanco;
-                    txtSenha.Text = servidor.SenhaBanco;
+                    string ip = configuracaoServidor.IpBanco;
+                    string porta = configuracaoServidor.PortaBanco;
+                    string usuario = configuracaoServidor.UsuarioBanco;
+                    string senha = configuracaoServidor.SenhaBanco;
+
+                    txtIp.Text = ip;
+                    txtPorta.Text = porta;
+                    txtUsuario.Text = usuario;
+                    txtSenha.Text = senha;
+
+                    CarregarBancos(ip, porta, usuario, senha);
+
+                    foreach (var servidor in configuracaoDto.Servidores)
+                    {
+                        string banco = servidor.NomeBanco;
+
+                        foreach (Control c in mPnlDataBase.Controls)
+                            if (c is CheckBox)
+                                if (((CheckBox)c).Text == banco)
+                                    ((CheckBox)c).Checked = true;
+                    }
                 }
 
                 txtDescricao.Text = configuracaoDto.Descricao;
@@ -357,18 +407,19 @@ namespace MetroBackup
                 dgDestinos.ClearSelection();
                 chkMostrarNotificacao.Checked = configuracaoDto.MostrarJanelaNotificacao;
                 chkUtilizarHostFtp.Checked = configuracaoDto.UtilizarHostFtp;
+                
                 txtHostFtp.Text = configuracaoDto.HostFtp;
                 txtUserFtp.Text = configuracaoDto.UserFtp;
                 txtPasswordFtp.Text = configuracaoDto.PasswordFtp;
 
                 HabilitaBotoesPrincipais(Novo: true, Editar: true, Excluir: true, Backup: true);
-
             }
         }
 
         private void dgDestinos_DoubleClick(object sender, EventArgs e)
         {
         }
+
         private void btnConectar_Click(object sender, EventArgs e)
         {
             string ip = txtIp.Text;
@@ -376,31 +427,7 @@ namespace MetroBackup
             string usuario = txtUsuario.Text;
             string senha = txtSenha.Text;
 
-            IEnumerable<string> bancos = _bancoDadosAppService.ObterTodos(
-                ip,
-                porta,
-                "information_schema",
-                usuario,
-                senha);
-
-            MetroFramework.Controls.MetroCheckBox chk;
-
-            int i = 0;
-
-            foreach (var banco in bancos)
-            {
-                i++;
-                chk = new MetroFramework.Controls.MetroCheckBox();
-                chk.AutoSize = true;
-                chk.Location = new Point(10, (((i + 1) * 20)) - 30);
-                chk.Name = "chk" + banco;
-                chk.Size = new Size(113, 15);
-                chk.TabIndex = 2 + i;
-                chk.Text = banco;
-                chk.UseVisualStyleBackColor = true;
-                chk.Style = MetroFramework.MetroColorStyle.Orange;
-                mPnlDataBase.Controls.Add(chk);
-            }
+            CarregarBancos(ip, porta, usuario, senha);
         }
 
         private void btnBackup_Click(object sender, EventArgs e)
