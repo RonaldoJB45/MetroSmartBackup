@@ -33,7 +33,7 @@ namespace MetroBackup.Infra.Acl
 
                             double _resultado = System.Math.Round(porcentagem, 2);
 
-                            _progressReporter.ReportProgress((double)_resultado);
+                            _progressReporter?.ReportProgress((double)_resultado);
                         };
 
                         mb.ExportToMemoryStream(ms);

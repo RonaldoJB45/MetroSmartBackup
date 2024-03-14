@@ -8,6 +8,10 @@ using System.Drawing;
 using System.Linq;
 using System.IO;
 using System;
+using MetroBackup.ApplicationService.Backup;
+using MetroBackup.Domain.Interfaces;
+using MetroSmartBackup;
+using System.Threading.Tasks;
 
 namespace MetroBackup
 {
@@ -15,14 +19,22 @@ namespace MetroBackup
     {
         private readonly IConfiguracaoAppService _configuracaoAppService;
         private readonly IBancoDadosAppService _bancoDadosAppService;
+        private readonly IBackupAppService _backupAppService;
+        private readonly IProgressReporter _progressReporter;
 
         private Guid? ConfiguracaoSelecionadaId = null;
 
-        public frmPrincipal(IConfiguracaoAppService configuracaoAppService, IBancoDadosAppService bancoDadosAppService)
+        public frmPrincipal(
+            IConfiguracaoAppService configuracaoAppService,
+            IBancoDadosAppService bancoDadosAppService,
+            IBackupAppService backupAppService,
+            IProgressReporter progressReporter)
         {
             InitializeComponent();
             _configuracaoAppService = configuracaoAppService;
             _bancoDadosAppService = bancoDadosAppService;
+            _backupAppService = backupAppService;
+            _progressReporter = progressReporter;
         }
 
         private void frmPrincipal_Load(object sender, EventArgs e)
@@ -433,6 +445,31 @@ namespace MetroBackup
 
         private void btnBackup_Click(object sender, EventArgs e)
         {
+            btnBackup.Enabled = false;
+
+            if (ConfiguracaoSelecionadaId.HasValue)
+            {
+                frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
+
+                _telaProgressBar.Show();
+
+                Task.Run(() =>
+                {
+                    _progressReporter.ProgressChanged += (progresso) =>
+                    {
+                        _telaProgressBar.Invoke((Action)delegate
+                        {
+                            _telaProgressBar.metroProgressBar.Value = (int)progresso;
+                            _telaProgressBar.lblProgresso.Text = progresso.ToString() + "%";
+                        });
+                    };
+
+                    _backupAppService.Executar(ConfiguracaoSelecionadaId.Value);
+
+                }).GetAwaiter();
+            }
+
+            btnBackup.Enabled = true;
         }
 
         private void frmPrincipal_Resize(object sender, EventArgs e)
