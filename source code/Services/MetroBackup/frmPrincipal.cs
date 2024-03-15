@@ -453,20 +453,20 @@ namespace MetroBackup
 
                 _telaProgressBar.Show();
 
-                Task.Run(() =>
+                _progressReporter.ProgressChanged += (progresso) =>
                 {
-                    _progressReporter.ProgressChanged += (progresso) =>
+                    if (_telaProgressBar.InvokeRequired)
                     {
-                        _telaProgressBar.Invoke((Action)delegate
-                        {
-                            _telaProgressBar.metroProgressBar.Value = (int)progresso;
-                            _telaProgressBar.lblProgresso.Text = progresso.ToString() + "%";
-                        });
-                    };
+                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress((int)progresso)));
+                    }
+                    else
+                    {
+                        _telaProgressBar.UpdateProgress((int)progresso);
+                    }
 
-                    _backupAppService.Executar(ConfiguracaoSelecionadaId.Value);
+                };
 
-                }).GetAwaiter();
+                Task.Run(() => _backupAppService.Executar(ConfiguracaoSelecionadaId.Value));
             }
 
             btnBackup.Enabled = true;

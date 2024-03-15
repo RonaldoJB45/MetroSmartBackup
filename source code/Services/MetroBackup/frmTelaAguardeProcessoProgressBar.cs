@@ -10,6 +10,15 @@ namespace MetroSmartBackup
             InitializeComponent();
         }
 
+        public void UpdateProgress(int progresso)
+        {
+            metroProgressBar.Value = progresso;
+            lblProgresso.Text = progresso.ToString() + "%";
+
+            if (progresso >= 100)
+                Close();
+        }
+
         private void frmTelaAguardeProcessoProgressBar_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
