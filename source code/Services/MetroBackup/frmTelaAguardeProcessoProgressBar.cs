@@ -8,15 +8,19 @@ namespace MetroSmartBackup
         public frmTelaAguardeProcessoProgressBar()
         {
             InitializeComponent();
+            SetDimensions(Width, Height);
         }
 
         public void UpdateProgress(int progresso)
         {
+            if (progresso >= 100)
+            {
+                ClockState = ClockStates.Showing;
+                progresso = 100;
+            }
+
             metroProgressBar.Value = progresso;
             lblProgresso.Text = progresso.ToString() + "%";
-
-            if (progresso >= 100)
-                Close();
         }
 
         private void frmTelaAguardeProcessoProgressBar_FormClosing(object sender, FormClosingEventArgs e)

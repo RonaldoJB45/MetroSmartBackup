@@ -451,8 +451,6 @@ namespace MetroBackup
             {
                 frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
 
-                _telaProgressBar.Show();
-
                 _progressReporter.ProgressChanged += (progresso) =>
                 {
                     if (_telaProgressBar.InvokeRequired)
@@ -467,6 +465,8 @@ namespace MetroBackup
                 };
 
                 Task.Run(() => _backupAppService.Executar(ConfiguracaoSelecionadaId.Value));
+
+                _telaProgressBar.Notify();
             }
 
             btnBackup.Enabled = true;
