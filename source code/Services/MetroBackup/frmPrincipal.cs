@@ -496,14 +496,21 @@ namespace MetroBackup
 
         private void chkUtilizarHostFtp_CheckedChanged(object sender, EventArgs e)
         {
+            grpDadosFtp.Enabled = chkUtilizarHostFtp.Checked;
         }
 
         private void txtSenha_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (e.KeyChar == (char)Keys.Enter)
+                btnConectar.PerformClick();
         }
 
         private void btnRestore_Click(object sender, EventArgs e)
         {
+            using (frmRestore frm = new frmRestore())
+            {
+                frm.ShowDialog();
+            }
         }
 
 
