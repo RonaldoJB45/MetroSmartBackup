@@ -449,6 +449,18 @@ namespace MetroBackup
 
             if (ConfiguracaoSelecionadaId.HasValue)
             {
+                ExibirJanelaNotificacao();
+
+                Task.Run(() => _backupAppService.Executar(ConfiguracaoSelecionadaId.Value));
+            }
+
+            btnBackup.Enabled = true;
+        }
+
+        private void ExibirJanelaNotificacao()
+        {
+            if (chkMostrarNotificacao.Checked)
+            {
                 frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
 
                 _progressReporter.ProgressChanged += (progresso) =>
@@ -464,20 +476,22 @@ namespace MetroBackup
 
                 };
 
-                Task.Run(() => _backupAppService.Executar(ConfiguracaoSelecionadaId.Value));
-
                 _telaProgressBar.Notify();
             }
-
-            btnBackup.Enabled = true;
         }
 
         private void frmPrincipal_Resize(object sender, EventArgs e)
         {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                this.Hide();
+            }
         }
 
         private void notifySmartBackup_DoubleClick(object sender, EventArgs e)
         {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
         }
 
         private void chkUtilizarHostFtp_CheckedChanged(object sender, EventArgs e)
