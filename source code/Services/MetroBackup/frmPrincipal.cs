@@ -290,12 +290,14 @@ namespace MetroBackup
             string usuario,
             string senha)
         {
-            IEnumerable<string> bancos = _bancoDadosAppService.ObterTodos(
-                ip,
-                porta,
-                "information_schema",
-                usuario,
-                senha);
+            IEnumerable<string> bancos = _bancoDadosAppService.ObterTodos(new BancoDadosDto
+            {
+                Endereco = ip,
+                Porta = porta,
+                Usuario = usuario,
+                Senha = senha
+            });
+
 
             MetroFramework.Controls.MetroCheckBox chk;
 
@@ -368,21 +370,34 @@ namespace MetroBackup
                     string usuario = configuracaoServidor.UsuarioBanco;
                     string senha = configuracaoServidor.SenhaBanco;
 
-                    txtIp.Text = ip;
-                    txtPorta.Text = porta;
-                    txtUsuario.Text = usuario;
-                    txtSenha.Text = senha;
-
-                    CarregarBancos(ip, porta, usuario, senha);
-
-                    foreach (var servidor in configuracaoDto.Servidores)
+                    var dto = new BancoDadosDto
                     {
-                        string banco = servidor.NomeBanco;
+                        Endereco = ip,
+                        Porta = porta,
+                        Usuario = usuario,
+                        Senha = senha
+                    };
 
-                        foreach (Control c in mPnlDataBase.Controls)
-                            if (c is CheckBox)
-                                if (((CheckBox)c).Text == banco)
-                                    ((CheckBox)c).Checked = true;
+                    _bancoDadosAppService.TestarConexao(dto);
+
+                    if (string.IsNullOrWhiteSpace(dto.Erro))
+                    {
+                        txtIp.Text = ip;
+                        txtPorta.Text = porta;
+                        txtUsuario.Text = usuario;
+                        txtSenha.Text = senha;
+
+                        CarregarBancos(ip, porta, usuario, senha);
+
+                        foreach (var servidor in configuracaoDto.Servidores)
+                        {
+                            string banco = servidor.NomeBanco;
+
+                            foreach (Control c in mPnlDataBase.Controls)
+                                if (c is CheckBox)
+                                    if (((CheckBox)c).Text == banco)
+                                        ((CheckBox)c).Checked = true;
+                        }
                     }
                 }
 
@@ -440,6 +455,22 @@ namespace MetroBackup
             string usuario = txtUsuario.Text;
             string senha = txtSenha.Text;
 
+            var dto = new BancoDadosDto
+            {
+                Endereco = ip,
+                Porta = porta,
+                Usuario = usuario,
+                Senha = senha
+            };
+
+            _bancoDadosAppService.TestarConexao(dto);
+
+            if (!string.IsNullOrWhiteSpace(dto.Erro))
+            {
+                MetroMessageBox.Show(this, "Conexão com o banco de dados falhou! \r\n" + dto.Erro);
+                return;
+            }
+
             CarregarBancos(ip, porta, usuario, senha);
         }
 
@@ -465,15 +496,16 @@ namespace MetroBackup
 
                 _progressReporter.ProgressChanged += (progresso) =>
                 {
+                    int _progresso = double.IsNaN(progresso) ? 100 : (int)progresso;
+
                     if (_telaProgressBar.InvokeRequired)
                     {
-                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress((int)progresso)));
+                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress(_progresso)));
                     }
                     else
                     {
-                        _telaProgressBar.UpdateProgress((int)progresso);
+                        _telaProgressBar.UpdateProgress(_progresso);
                     }
-
                 };
 
                 _telaProgressBar.Notify();

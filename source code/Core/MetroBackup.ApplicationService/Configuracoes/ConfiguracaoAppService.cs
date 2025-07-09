@@ -31,11 +31,11 @@ namespace MetroBackup.ApplicationService.Configuracoes
                 foreach (var servidorDto in configuracaoDto.Servidores)
                 {
                     servidores.Add(new Servidor(
-                        servidorDto.NomeBanco,
                         servidorDto.IpBanco,
                         servidorDto.PortaBanco,
                         servidorDto.UsuarioBanco,
-                        servidorDto.SenhaBanco));
+                        servidorDto.SenhaBanco,
+                        servidorDto.NomeBanco));
                 }
 
                 var ftp = new Ftp(

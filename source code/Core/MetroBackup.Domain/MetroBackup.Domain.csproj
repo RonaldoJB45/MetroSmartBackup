@@ -56,7 +56,7 @@
     <Compile Include="Services\ProgressReporter.cs" />
     <Compile Include="ValueObjets\Ftp.cs" />
     <Compile Include="ValueObjets\HoraConfig.cs" />
-    <Compile Include="ValueObjets\Servidor.cs" />
+    <Compile Include="Entities\Servidor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

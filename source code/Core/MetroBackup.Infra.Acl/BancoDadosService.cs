@@ -1,4 +1,5 @@
 ﻿using MetroBackup.Domain.Interfaces;
+using MetroBackup.Domain.ValueObjets;
 using MySql.Data.MySqlClient;
 using System.Collections.Generic;
 
@@ -6,20 +7,32 @@ namespace MetroBackup.Infra.Acl
 {
     public class BancoDadosService : IBancoDadosService
     {
-        public IEnumerable<string> ObterTodos(
-            string server,
-            string port,
-            string dataBase,
-            string uid,
-            string password)
+        public void TestarConexao(Servidor servidor)
+        {
+            using (MySqlConnection connection = new MySqlConnection(servidor.MySqlConnectionStrings))
+            {
+                try
+                {
+                    connection.Open();
+                }
+                catch (System.Exception ex)
+                {
+                    servidor.AddErro(ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public IEnumerable<string> ObterTodos(Servidor servidor)
         {
             List<string> schemas = new List<string>();
 
-            string connectionString = $"SERVER={server};PORT={port};DATABASE={dataBase};UID={uid};PASSWORD={password}";
-
             string comando = "select schema_name from information_schema.schemata";
 
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = new MySqlConnection(servidor.MySqlConnectionStrings))
             {
                 connection.Open();
 

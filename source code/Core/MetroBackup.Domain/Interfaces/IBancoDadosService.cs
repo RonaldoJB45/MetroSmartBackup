@@ -1,14 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using MetroBackup.Domain.ValueObjets;
+using System.Collections.Generic;
 
 namespace MetroBackup.Domain.Interfaces
 {
     public interface IBancoDadosService
     {
-        IEnumerable<string> ObterTodos(
-            string server,
-            string port,
-            string dataBase,
-            string uid,
-            string password);
+        void TestarConexao(Servidor servidor);
+        IEnumerable<string> ObterTodos(Servidor servidor);
     }
 }

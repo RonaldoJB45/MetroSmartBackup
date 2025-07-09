@@ -4,11 +4,7 @@ namespace MetroBackup.ApplicationService.BancoDados
 {
     public interface IBancoDadosAppService
     {
-        IEnumerable<string> ObterTodos(
-            string server,
-            string port,
-            string dataBase,
-            string uid,
-            string password);
+        IEnumerable<string> ObterTodos(BancoDadosDto bancoDadosDto);
+        void TestarConexao(BancoDadosDto bancoDadosDto);
     }
 }

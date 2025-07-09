@@ -1,4 +1,5 @@
 ﻿using MetroBackup.Domain.Interfaces;
+using MetroBackup.Domain.ValueObjets;
 using System.Collections.Generic;
 
 namespace MetroBackup.ApplicationService.BancoDados
@@ -12,19 +13,27 @@ namespace MetroBackup.ApplicationService.BancoDados
             _bancoDadosService = bancoDadosService;
         }
 
-        public IEnumerable<string> ObterTodos(
-            string server,
-            string port,
-            string dataBase,
-            string uid,
-            string password)
+        public void TestarConexao(BancoDadosDto bancoDadosDto)
         {
-            return _bancoDadosService.ObterTodos(
-                server,
-                port,
-                dataBase,
-                uid,
-                password);
+            var servidor = new Servidor(
+                   bancoDadosDto.Endereco,
+                   bancoDadosDto.Porta,
+                   bancoDadosDto.Usuario,
+                   bancoDadosDto.Senha,
+                   bancoDadosDto.NomeBanco);
+
+            _bancoDadosService.TestarConexao(servidor);
+            bancoDadosDto.Erro = servidor.Erro;
+        }
+
+        public IEnumerable<string> ObterTodos(BancoDadosDto bancoDadosDto)
+        {
+            return _bancoDadosService.ObterTodos(new Servidor(
+                bancoDadosDto.Endereco,
+                bancoDadosDto.Porta,
+                bancoDadosDto.Usuario,
+                bancoDadosDto.Senha,
+                bancoDadosDto.NomeBanco));
         }
     }
 }
