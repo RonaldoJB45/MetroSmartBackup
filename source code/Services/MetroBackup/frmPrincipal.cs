@@ -1,17 +1,17 @@
 ﻿using MetroBackup.ApplicationService.Configuracoes;
 using MetroBackup.ApplicationService.BancoDados;
+using MetroBackup.ApplicationService.Backup;
+using MetroBackup.Domain.Interfaces;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MetroFramework.Forms;
 using System.Windows.Forms;
+using MetroSmartBackup;
 using MetroFramework;
 using System.Drawing;
 using System.Linq;
 using System.IO;
 using System;
-using MetroBackup.ApplicationService.Backup;
-using MetroBackup.Domain.Interfaces;
-using MetroSmartBackup;
-using System.Threading.Tasks;
 
 namespace MetroBackup
 {
@@ -202,6 +202,7 @@ namespace MetroBackup
         #endregion
 
         #region Metodos
+
         private string[] RetornaListaBancos()
         {
             string[] lista;
@@ -318,14 +319,6 @@ namespace MetroBackup
                 mPnlDataBase.Controls.Add(chk);
             }
         }
-
-        #endregion
-
-        #region BancoDeDados
-
-        #endregion
-
-        #region Validacao
 
         #endregion
 
@@ -496,15 +489,13 @@ namespace MetroBackup
 
                 _progressReporter.ProgressChanged += (progresso) =>
                 {
-                    int _progresso = double.IsNaN(progresso) ? 100 : (int)progresso;
-
                     if (_telaProgressBar.InvokeRequired)
                     {
-                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress(_progresso)));
+                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress((int)progresso)));
                     }
                     else
                     {
-                        _telaProgressBar.UpdateProgress(_progresso);
+                        _telaProgressBar.UpdateProgress((int)progresso);
                     }
                 };
 

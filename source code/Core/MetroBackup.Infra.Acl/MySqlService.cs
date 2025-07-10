@@ -24,16 +24,26 @@ namespace MetroBackup.Infra.Acl
                         cmd.Connection = conn;
                         conn.Open();
 
+                        mb.ExportInfo.GetTotalRowsBeforeExport = true;
                         mb.ExportProgressChanged += (object sender, ExportProgressArgs e) =>
                         {
-                            double _totalRowsInAllTables = e.TotalRowsInAllTables;
-                            double _currentRowInAllTables = e.CurrentRowIndexInAllTables;
+                            int progress = 0;
 
-                            double porcentagem = (_currentRowInAllTables * 100) / _totalRowsInAllTables;
+                            if (e.TotalTables > 0)
+                            {
+                                double tableProgress = (double)e.CurrentTableIndex / e.TotalTables;
 
-                            double _resultado = System.Math.Round(porcentagem, 2);
+                                double rowProgress = (e.TotalRowsInCurrentTable > 0)
+                                    ? (double)e.CurrentRowIndexInCurrentTable / e.TotalRowsInCurrentTable
+                                    : 0;
 
-                            _progressReporter?.ReportProgress((double)_resultado);
+                                double combinedProgress = tableProgress + (rowProgress / e.TotalTables);
+
+                                progress = (int)(combinedProgress * 100);
+                                if (progress > 100) progress = 100;
+                            }
+
+                            _progressReporter?.ReportProgress(progress);
                         };
 
                         mb.ExportToMemoryStream(ms);
@@ -41,5 +51,6 @@ namespace MetroBackup.Infra.Acl
                 }
             }
         }
+
     }
 }
