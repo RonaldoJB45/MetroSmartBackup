@@ -42,6 +42,10 @@ namespace MetroBackup.Infra.Acl
                                 progress = (int)(combinedProgress * 100);
                                 if (progress > 100) progress = 100;
                             }
+                            else
+                            {
+                                progress = 100;
+                            }
 
                             _progressReporter?.ReportProgress(progress);
                         };
