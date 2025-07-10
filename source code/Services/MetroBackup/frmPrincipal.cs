@@ -109,48 +109,6 @@ namespace MetroBackup
             HabilitaBotoesPrincipais(Salvar: true, Cancelar: true);
         }
 
-        private void PreencherBancos(ConfiguracaoDto configuracaoDto)
-        {
-            var bancos = RetornaListaBancos();
-
-            foreach (var nomeBanco in bancos)
-            {
-                var servidorDto = new ServidorDto
-                {
-                    IpBanco = txtIp.Text,
-                    NomeBanco = nomeBanco,
-                    PortaBanco = txtPorta.Text,
-                    UsuarioBanco = txtUsuario.Text,
-                    SenhaBanco = txtSenha.Text
-                };
-
-                configuracaoDto.Servidores.Add(servidorDto);
-            }
-        }
-
-        private void PreencherConfiguracaoDto(ConfiguracaoDto configuracaoDto)
-        {
-            PreencherBancos(configuracaoDto);
-
-            configuracaoDto.Id = ConfiguracaoSelecionadaId;
-            configuracaoDto.Descricao = txtDescricao.Text;
-            configuracaoDto.DiasDaSemana = RetornaDiasDaSemana();
-            configuracaoDto.UsarIntervaloHoras = chkIntervalo.Checked;
-            configuracaoDto.ValorIntervaloHoras = !string.IsNullOrEmpty(txtIntervalo.Text) ? Convert.ToInt32(txtIntervalo.Text) : 0;
-            configuracaoDto.UsarHoraFixa = chkHoraFixa.Checked;
-            configuracaoDto.ValorHoraFixa = Convert.ToString(dtpHoraFixa.Value);
-            configuracaoDto.UsarConfigApagar = chkApagar.Checked;
-            configuracaoDto.QtdeDiasParaApagar = !string.IsNullOrEmpty(txtDiasApagar.Text) ? Convert.ToInt32(txtDiasApagar.Text) : 0;
-            configuracaoDto.Compactar = chkCompactar.Checked;
-            configuracaoDto.Compactador = cmbCompactador.Text;
-            configuracaoDto.Destinos = RetornaDestinos();
-            configuracaoDto.MostrarJanelaNotificacao = chkMostrarNotificacao.Checked;
-            configuracaoDto.UtilizarHostFtp = chkUtilizarHostFtp.Checked;
-            configuracaoDto.HostFtp = txtHostFtp.Text;
-            configuracaoDto.UserFtp = txtUserFtp.Text;
-            configuracaoDto.PasswordFtp = txtPasswordFtp.Text;
-        }
-
         private void btnSalvar_Click(object sender, EventArgs e)
         {
             ConfiguracaoDto configuracaoDto = new ConfiguracaoDto();
@@ -197,6 +155,31 @@ namespace MetroBackup
             dgLista.Enabled = true;
 
             HabilitaBotoesPrincipais(Novo: true);
+        }
+
+        private void btnBackup_Click(object sender, EventArgs e)
+        {
+            btnBackup.Enabled = false;
+
+            if (ConfiguracaoSelecionadaId.HasValue)
+            {
+                ExibirJanelaNotificacao();
+
+                Task.Run(() =>
+                {
+                    _backupAppService.Executar(new BackupDto { ConfiguracaoId = ConfiguracaoSelecionadaId.Value });
+                });
+            }
+
+            btnBackup.Enabled = true;
+        }
+
+        private void btnRestore_Click(object sender, EventArgs e)
+        {
+            using (frmRestore frm = new frmRestore())
+            {
+                frm.ShowDialog();
+            }
         }
 
         #endregion
@@ -249,6 +232,46 @@ namespace MetroBackup
             return destinos;
         }
 
+        private void PreencherBancos(ConfiguracaoDto configuracaoDto)
+        {
+            var bancos = RetornaListaBancos();
+
+            foreach (var nomeBanco in bancos)
+            {
+                var servidorDto = new ServidorDto
+                {
+                    IpBanco = txtIp.Text,
+                    NomeBanco = nomeBanco,
+                    PortaBanco = txtPorta.Text,
+                    UsuarioBanco = txtUsuario.Text,
+                    SenhaBanco = txtSenha.Text
+                };
+
+                configuracaoDto.Servidores.Add(servidorDto);
+            }
+        }
+        private void PreencherConfiguracaoDto(ConfiguracaoDto configuracaoDto)
+        {
+            PreencherBancos(configuracaoDto);
+
+            configuracaoDto.Id = ConfiguracaoSelecionadaId;
+            configuracaoDto.Descricao = txtDescricao.Text;
+            configuracaoDto.DiasDaSemana = RetornaDiasDaSemana();
+            configuracaoDto.UsarIntervaloHoras = chkIntervalo.Checked;
+            configuracaoDto.ValorIntervaloHoras = !string.IsNullOrEmpty(txtIntervalo.Text) ? Convert.ToInt32(txtIntervalo.Text) : 0;
+            configuracaoDto.UsarHoraFixa = chkHoraFixa.Checked;
+            configuracaoDto.ValorHoraFixa = Convert.ToString(dtpHoraFixa.Value);
+            configuracaoDto.UsarConfigApagar = chkApagar.Checked;
+            configuracaoDto.QtdeDiasParaApagar = !string.IsNullOrEmpty(txtDiasApagar.Text) ? Convert.ToInt32(txtDiasApagar.Text) : 0;
+            configuracaoDto.Compactar = chkCompactar.Checked;
+            configuracaoDto.Compactador = cmbCompactador.Text;
+            configuracaoDto.Destinos = RetornaDestinos();
+            configuracaoDto.MostrarJanelaNotificacao = chkMostrarNotificacao.Checked;
+            configuracaoDto.UtilizarHostFtp = chkUtilizarHostFtp.Checked;
+            configuracaoDto.HostFtp = txtHostFtp.Text;
+            configuracaoDto.UserFtp = txtUserFtp.Text;
+            configuracaoDto.PasswordFtp = txtPasswordFtp.Text;
+        }
         private void LimpaCampos()
         {
             foreach (Control c in mPnlDiasSemana.Controls)
@@ -317,6 +340,37 @@ namespace MetroBackup
                 chk.UseVisualStyleBackColor = true;
                 chk.Style = MetroColorStyle.Orange;
                 mPnlDataBase.Controls.Add(chk);
+            }
+        }
+
+        private void ExibirJanelaNotificacao()
+        {
+            if (chkMostrarNotificacao.Checked)
+            {
+                frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
+
+                IProgressReporter.ProgressHandler handler;
+
+                handler = (progresso) =>
+                {
+                    if (_telaProgressBar.InvokeRequired)
+                    {
+                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress((int)progresso)));
+                    }
+                    else
+                    {
+                        _telaProgressBar.UpdateProgress((int)progresso);
+                    }
+                };
+
+                _progressReporter.ProgressChanged += handler;
+
+                _telaProgressBar.FormClosed += (s, e) =>
+                {
+                    _progressReporter.ProgressChanged -= handler;
+                };
+
+                _telaProgressBar.Notify();
             }
         }
 
@@ -467,42 +521,6 @@ namespace MetroBackup
             CarregarBancos(ip, porta, usuario, senha);
         }
 
-        private void btnBackup_Click(object sender, EventArgs e)
-        {
-            btnBackup.Enabled = false;
-
-            if (ConfiguracaoSelecionadaId.HasValue)
-            {
-                ExibirJanelaNotificacao();
-
-                Task.Run(() => _backupAppService.Executar(ConfiguracaoSelecionadaId.Value));
-            }
-
-            btnBackup.Enabled = true;
-        }
-
-        private void ExibirJanelaNotificacao()
-        {
-            if (chkMostrarNotificacao.Checked)
-            {
-                frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
-
-                _progressReporter.ProgressChanged += (progresso) =>
-                {
-                    if (_telaProgressBar.InvokeRequired)
-                    {
-                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress((int)progresso)));
-                    }
-                    else
-                    {
-                        _telaProgressBar.UpdateProgress((int)progresso);
-                    }
-                };
-
-                _telaProgressBar.Notify();
-            }
-        }
-
         private void frmPrincipal_Resize(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
@@ -527,15 +545,6 @@ namespace MetroBackup
             if (e.KeyChar == (char)Keys.Enter)
                 btnConectar.PerformClick();
         }
-
-        private void btnRestore_Click(object sender, EventArgs e)
-        {
-            using (frmRestore frm = new frmRestore())
-            {
-                frm.ShowDialog();
-            }
-        }
-
 
         private void txtDescricao_KeyPress(object sender, KeyPressEventArgs e)
         {

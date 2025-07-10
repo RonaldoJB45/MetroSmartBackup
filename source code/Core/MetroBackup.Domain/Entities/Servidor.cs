@@ -22,6 +22,9 @@
         public string Usuario { get; private set; }
         public string Senha { get; private set; }
 
+        public string CaminhoBackup { get; private set; }
+        public void AddCaminhoBackup(string caminhoBackup) => CaminhoBackup = caminhoBackup;
+
         public string Erro { get; private set; }
         public void AddErro(string erro) => Erro = erro;
 

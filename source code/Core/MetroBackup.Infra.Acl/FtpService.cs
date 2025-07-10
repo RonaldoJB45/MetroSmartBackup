@@ -16,29 +16,45 @@ namespace MetroBackup.Infra.Acl
             string user = ftp.User;
             string password = ftp.Password;
 
-            string nomeArquivo = host + "/" + Guid.NewGuid().ToString();
-            string destino = "";
+            if (!host.StartsWith("ftp://", StringComparison.OrdinalIgnoreCase))
+                host = "ftp://" + host;
 
-            var ftpRequest = (FtpWebRequest)FtpWebRequest.Create(new Uri(nomeArquivo));
-            ftpRequest.Method = WebRequestMethods.Ftp.UploadFile;
-            ftpRequest.Proxy = null;
-            ftpRequest.UseBinary = true;
-            ftpRequest.Credentials = new NetworkCredential(user, password);
-
-            using (FileStream fs = File.OpenRead(destino))
+            foreach (var servidor in configuracao.Servidores)
             {
-                using (Stream writer = ftpRequest.GetRequestStream())
-                {
-                    var buffer = new byte[1024 * 1024];
-                    int totalReadBytesCount = 0;
-                    int readBytesCount;
+                string caminhoArquivoLocal = servidor.CaminhoBackup;
 
-                    while ((readBytesCount = fs.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        writer.Write(buffer, 0, readBytesCount);
-                        totalReadBytesCount += readBytesCount;
-                        var progress = totalReadBytesCount * 100.0 / fs.Length;
-                    }
+                try
+                {
+                    if (!File.Exists(caminhoArquivoLocal))
+                        continue;
+
+                    string nomeArquivo = Path.GetFileName(caminhoArquivoLocal);
+                    string caminhoRemoto = $"{host}/{nomeArquivo}";
+
+                    UploadArquivoFtp(caminhoArquivoLocal, caminhoRemoto, user, password);
+                }
+                catch (Exception ex)
+                {
+                    servidor.AddErro($"Erro ao enviar {caminhoArquivoLocal}: {ex.Message}");
+                }
+            }
+        }
+        private void UploadArquivoFtp(string caminhoLocal, string caminhoRemoto, string user, string password)
+        {
+            var request = (FtpWebRequest)WebRequest.Create(caminhoRemoto);
+            request.Method = WebRequestMethods.Ftp.UploadFile;
+            request.UseBinary = true;
+            request.Proxy = null;
+            request.Credentials = new NetworkCredential(user, password);
+
+            using (FileStream fs = File.OpenRead(caminhoLocal))
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                byte[] buffer = new byte[8192];
+                int bytesRead;
+                while ((bytesRead = fs.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    requestStream.Write(buffer, 0, bytesRead);
                 }
             }
         }

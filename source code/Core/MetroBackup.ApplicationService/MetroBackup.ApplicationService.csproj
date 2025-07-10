@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backup\BackupAppService.cs" />
+    <Compile Include="Backup\BackupDto.cs" />
     <Compile Include="BancoDados\BancoDadosAppService.cs" />
     <Compile Include="BancoDados\BancoDadosDto.cs" />
     <Compile Include="Configuracoes\ConfiguracaoAppService.cs" />

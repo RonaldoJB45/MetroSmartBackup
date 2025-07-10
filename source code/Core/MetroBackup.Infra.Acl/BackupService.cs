@@ -21,54 +21,65 @@ namespace MetroBackup.Infra.Acl
 
             foreach (var servidor in configuracao.Servidores)
             {
-                using (MemoryStream ms = new MemoryStream())
+                using (var msOriginal = new MemoryStream())
                 {
-                    mySqlService.BackupToMemoryStream(ms, servidor.MySqlConnectionStrings);
+                    mySqlService.BackupToMemoryStream(msOriginal, servidor.MySqlConnectionStrings);
+                    byte[] backupBytes = msOriginal.ToArray();
 
                     foreach (var destino in configuracao.Destinos)
                     {
+                        string pathArquivo;
+
                         if (configuracao.Compactar)
-                            Compactar(ms, servidor.NomeBanco, destino, configuracao.Compactador);
+                        {
+                            pathArquivo = Compactar(backupBytes, servidor.NomeBanco, destino, configuracao.Compactador);
+                        }
                         else
-                            SalvarArquivo(ms, servidor.NomeBanco, destino);
+                        {
+                            pathArquivo = SalvarArquivo(backupBytes, servidor.NomeBanco, destino);
+                        }
+
+                        servidor.AddCaminhoBackup(pathArquivo);
                     }
                 }
             }
         }
-
-        static void Compactar(MemoryStream ms, string nomeBanco, string destino, string compactador)
+        private static string Compactar(byte[] backupData, string nomeBanco, string destino, string compactador)
         {
             if (!Directory.Exists(destino))
                 Directory.CreateDirectory(destino);
 
-            byte[] data = ms.ToArray();
+            string nomeArquivoZip = Formatar(nomeBanco, compactador);
+            string pathDestinoArquivo = Path.Combine(destino, nomeArquivoZip);
 
-            using (MemoryStream stream = new MemoryStream(data))
+            using (var stream = new MemoryStream(backupData))
+            using (var zip = new ZipFile())
             {
-                using (ZipFile zip = new ZipFile())
-                {
-                    string pathDestinoArquivo = destino + "\\" + Formatar(nomeBanco, compactador);
-                    zip.AddEntry(Formatar(nomeBanco, "sql"), stream);
-                    zip.Save(pathDestinoArquivo);
-                }
+                zip.AddEntry(Formatar(nomeBanco, "sql"), stream);
+                zip.Save(pathDestinoArquivo);
             }
-        }
 
-        static void SalvarArquivo(MemoryStream memoryStream, string nomeBanco, string destino)
+            return pathDestinoArquivo;
+        }
+        private static string SalvarArquivo(byte[] backupData, string nomeBanco, string destino)
         {
             if (!Directory.Exists(destino))
                 Directory.CreateDirectory(destino);
 
-            string pathDestinoArquivo = destino + "\\" + Formatar(nomeBanco, "sql");
+            string nomeArquivo = Formatar(nomeBanco, "sql");
+            string pathDestinoArquivo = Path.Combine(destino, nomeArquivo);
 
-            using (FileStream fileStream = new FileStream(pathDestinoArquivo, FileMode.Create, FileAccess.Write))
+            using (var fileStream = new FileStream(pathDestinoArquivo, FileMode.Create, FileAccess.Write))
             {
-                memoryStream.WriteTo(fileStream);
+                fileStream.Write(backupData, 0, backupData.Length);
             }
+
+            return pathDestinoArquivo;
         }
-        static string Formatar(string nome, string extensao)
+
+        private static string Formatar(string nome, string extensao)
         {
-            return nome + "_" + DateTime.Now.ToString("ddMMyyyyHHmmssfff") + "." + extensao;
+            return $"{nome}_{DateTime.Now:ddMMyyyyHHmmssfff}.{extensao}";
         }
     }
 }
