@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MetroFramework.Forms;
 using System.Windows.Forms;
 using MetroSmartBackup;
+using System.Globalization;
 using MetroFramework;
 using System.Drawing;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace MetroBackup
         private readonly IBackupAppService _backupAppService;
         private readonly IRestoreAppService _restoreAppService;
         private readonly IProgressReporter _progressReporter;
+        private readonly CultureInfo cultureInfo = new CultureInfo("pt-BR");
 
         private Guid? ConfiguracaoSelecionadaId = null;
 
@@ -49,6 +51,43 @@ namespace MetroBackup
             RenderizarLogo();
             HabilitaBotoesPrincipais(Novo: true);
             PreencherListaConfiguracoes();
+            IniciarTimer();
+        }
+
+        private void IniciarTimer()
+        {
+            System.Timers.Timer timer = new System.Timers.Timer(60000);
+            timer.Elapsed += Timer_Tick;
+            timer.Start();
+        }
+
+        private void Timer_Tick(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            string dia = cultureInfo.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek);
+
+            var configuracoes = _configuracaoAppService.ObterTodos();
+
+            foreach (var configuracao in configuracoes)
+            {
+                var diaDaSemana = configuracao.DiasDaSemana.Any(d => d.ToLower() == dia.ToLower());
+
+                if (diaDaSemana)
+                {
+                    string valorHoraFixa = DateTime.Parse(configuracao.ValorHoraFixa).ToString("HH:mm");
+                    string valorHoraAgora = DateTime.Now.ToString("HH:mm");
+
+                    if (valorHoraFixa == valorHoraAgora)
+                    {
+                        Task.Run(() =>
+                        {
+                            Invoke(new Action(() =>
+                            {
+                                Backup();
+                            }));
+                        });
+                    }
+                }
+            }
         }
 
         private void RenderizarLogo()
@@ -163,6 +202,26 @@ namespace MetroBackup
 
         private void btnBackup_Click(object sender, EventArgs e)
         {
+            Backup();
+        }
+
+        private void btnRestore_Click(object sender, EventArgs e)
+        {
+            using (frmRestore frm = new frmRestore(
+                _bancoDadosAppService,
+                _restoreAppService,
+                _progressReporter))
+            {
+                frm.ShowDialog();
+            }
+        }
+
+        #endregion
+
+        #region Metodos
+
+        private void Backup()
+        {
             btnBackup.Enabled = false;
 
             if (ConfiguracaoSelecionadaId.HasValue)
@@ -197,21 +256,6 @@ namespace MetroBackup
                 }
             }
         }
-
-        private void btnRestore_Click(object sender, EventArgs e)
-        {
-            using (frmRestore frm = new frmRestore(
-                _bancoDadosAppService,
-                _restoreAppService,
-                _progressReporter))
-            {
-                frm.ShowDialog();
-            }
-        }
-
-        #endregion
-
-        #region Metodos
 
         private string[] RetornaListaBancos()
         {
