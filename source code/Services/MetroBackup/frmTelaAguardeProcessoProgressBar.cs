@@ -11,7 +11,7 @@ namespace MetroSmartBackup
             SetDimensions(Width, Height);
         }
 
-        public void UpdateProgress(int progresso)
+        public void UpdateProgress(int progresso, string mensagem)
         {
             if (progresso >= 100)
             {
@@ -21,6 +21,7 @@ namespace MetroSmartBackup
 
             metroProgressBar.Value = progresso;
             lblProgresso.Text = progresso.ToString() + "%";
+            lblMsg.Text = mensagem ?? "Aguarde!";
         }
 
         private void frmTelaAguardeProcessoProgressBar_FormClosing(object sender, FormClosingEventArgs e)

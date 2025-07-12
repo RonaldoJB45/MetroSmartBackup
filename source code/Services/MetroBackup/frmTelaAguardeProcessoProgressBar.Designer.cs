@@ -48,9 +48,8 @@
             this.lblMsg.FontSize = MetroFramework.MetroLabelSize.Small;
             this.lblMsg.Location = new System.Drawing.Point(23, 85);
             this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(145, 15);
+            this.lblMsg.Size = new System.Drawing.Size(0, 0);
             this.lblMsg.TabIndex = 2;
-            this.lblMsg.Text = "Aguarde iniciando backup...";
             // 
             // lblProgresso
             // 

@@ -8,11 +8,11 @@ namespace MetroBackup.Domain.Services
         public delegate void ProgressHandler(double progress);
         public event IProgressReporter.ProgressHandler ProgressChanged;
 
-        public void ReportProgress(double progress)
+        public void ReportProgress(double progress, string message)
         {
             lock (lockObject)
             {
-                ProgressChanged?.Invoke(progress);
+                ProgressChanged?.Invoke(progress, message);
             }
         }
     }

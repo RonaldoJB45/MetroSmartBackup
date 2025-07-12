@@ -351,15 +351,15 @@ namespace MetroBackup
 
                 IProgressReporter.ProgressHandler handler;
 
-                handler = (progresso) =>
+                handler = (progresso, mensagem) =>
                 {
                     if (_telaProgressBar.InvokeRequired)
                     {
-                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress((int)progresso)));
+                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress((int)progresso, mensagem)));
                     }
                     else
                     {
-                        _telaProgressBar.UpdateProgress((int)progresso);
+                        _telaProgressBar.UpdateProgress((int)progresso, mensagem);
                     }
                 };
 

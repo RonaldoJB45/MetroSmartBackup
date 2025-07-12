@@ -47,7 +47,7 @@ namespace MetroBackup.Infra.Acl
                                 progress = 100;
                             }
 
-                            _progressReporter?.ReportProgress(progress);
+                            _progressReporter?.ReportProgress(progress, "Fazendo Backup! Aguarde...");
                         };
 
                         mb.ExportToMemoryStream(ms);

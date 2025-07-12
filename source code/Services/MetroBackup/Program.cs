@@ -32,7 +32,7 @@ namespace MetroBackup
             IProgressReporter progressReporter = new ProgressReporter();
 
             IBackupService backupService = new BackupService(progressReporter);
-            IFtpService ftpService = new FtpService();
+            IFtpService ftpService = new FtpService(progressReporter);
             IBackupAppService backupAppService = new BackupAppService(backupService, ftpService, configuracaoRepository);
 
             var frmPrincipal = new frmPrincipal(configuracaoAppService,

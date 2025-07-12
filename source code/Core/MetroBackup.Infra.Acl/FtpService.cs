@@ -8,6 +8,13 @@ namespace MetroBackup.Infra.Acl
 {
     public class FtpService : IFtpService
     {
+        private readonly IProgressReporter _progressReporter;
+
+        public FtpService(IProgressReporter progressReporter)
+        {
+            _progressReporter = progressReporter;
+        }
+
         public void Enviar(Configuracao configuracao)
         {
             var ftp = configuracao.Ftp;
@@ -52,9 +59,16 @@ namespace MetroBackup.Infra.Acl
             {
                 byte[] buffer = new byte[8192];
                 int bytesRead;
+                long totalBytesRead = 0;
+                long totalBytes = fs.Length;
+
                 while ((bytesRead = fs.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     requestStream.Write(buffer, 0, bytesRead);
+
+                    totalBytesRead += bytesRead;
+                    int progresso = (int)((totalBytesRead / (double)totalBytes) * 100);
+                    _progressReporter.ReportProgress(progresso, "Enviando arquivo via FTP! Aguarde");
                 }
             }
         }
