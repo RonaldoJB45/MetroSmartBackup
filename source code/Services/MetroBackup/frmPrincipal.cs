@@ -25,8 +25,8 @@ namespace MetroBackup
         private readonly IRestoreAppService _restoreAppService;
         private readonly IProgressReporter _progressReporter;
         private readonly CultureInfo cultureInfo = new CultureInfo("pt-BR");
-
         private Guid? ConfiguracaoSelecionadaId = null;
+        private string diaAtual;
 
         public frmPrincipal(
             IConfiguracaoAppService configuracaoAppService,
@@ -56,36 +56,40 @@ namespace MetroBackup
 
         private void IniciarTimer()
         {
-            System.Timers.Timer timer = new System.Timers.Timer(60000);
+            System.Timers.Timer timer = new System.Timers.Timer(30000);
             timer.Elapsed += Timer_Tick;
             timer.Start();
         }
 
         private void Timer_Tick(object sender, System.Timers.ElapsedEventArgs e)
         {
-            string dia = cultureInfo.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek);
+            diaAtual = cultureInfo.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek);
+            var configuracoesDto = _configuracaoAppService.ObterTodos();
 
-            var configuracoes = _configuracaoAppService.ObterTodos();
-
-            foreach (var configuracao in configuracoes)
+            foreach (var configuracaoDto in configuracoesDto)
             {
-                var diaDaSemana = configuracao.DiasDaSemana.Any(d => d.ToLower() == dia.ToLower());
+                BackupHoraFixa(configuracaoDto);
+            }
+        }
 
-                if (diaDaSemana)
+        private void BackupHoraFixa(ConfiguracaoDto configuracaoDto)
+        {
+            var diaDaSemana = configuracaoDto.DiasDaSemana.Any(d => d.ToLower() == diaAtual.ToLower());
+
+            if (diaDaSemana)
+            {
+                string valorHoraFixa = DateTime.Parse(configuracaoDto.ValorHoraFixa).ToString("HH:mm");
+                string valorHoraAgora = DateTime.Now.ToString("HH:mm");
+
+                if (valorHoraFixa == valorHoraAgora)
                 {
-                    string valorHoraFixa = DateTime.Parse(configuracao.ValorHoraFixa).ToString("HH:mm");
-                    string valorHoraAgora = DateTime.Now.ToString("HH:mm");
-
-                    if (valorHoraFixa == valorHoraAgora)
+                    Task.Run(() =>
                     {
-                        Task.Run(() =>
+                        Invoke(new Action(() =>
                         {
-                            Invoke(new Action(() =>
-                            {
-                                Backup();
-                            }));
-                        });
-                    }
+                            Backup();
+                        }));
+                    });
                 }
             }
         }
