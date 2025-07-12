@@ -1,13 +1,15 @@
 ﻿using MetroBackup.ApplicationService.Configuracoes;
 using MetroBackup.ApplicationService.BancoDados;
+using MetroBackup.ApplicationService.Restauracoes;
+using MetroBackup.ApplicationService.Backup;
+using MetroBackup.Domain.Interfaces.Services;
+using MetroBackup.Domain.Interfaces.Repository;
 using MetroBackup.Domain.Interfaces;
+using MetroBackup.Domain.Services;
 using MetroBackup.Infra.Acl;
 using MetroBackup.Infra.Data;
 using System.Windows.Forms;
 using System;
-using MetroBackup.ApplicationService.Backup;
-using MetroBackup.Domain.Services;
-using MetroBackup.ApplicationService.Restauracoes;
 
 namespace MetroBackup
 {

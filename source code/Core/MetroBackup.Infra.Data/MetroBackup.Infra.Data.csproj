@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="ConfiguracaoRepository.cs" />
     <Compile Include="FileContext.cs" />
+    <Compile Include="UltimoBackupRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

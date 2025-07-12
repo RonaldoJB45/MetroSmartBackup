@@ -1,4 +1,4 @@
-﻿using MetroBackup.Domain.Entities;
+﻿using MetroBackup.Domain.Interfaces.Services;
 using MetroBackup.Domain.Interfaces;
 using MetroBackup.Domain.ValueObjets;
 using MySql.Data.MySqlClient;

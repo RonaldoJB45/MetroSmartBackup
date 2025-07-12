@@ -1,7 +1,7 @@
 ﻿using MetroBackup.Domain.ValueObjets;
 using System.Collections.Generic;
 
-namespace MetroBackup.Domain.Interfaces
+namespace MetroBackup.Domain.Interfaces.Services
 {
     public interface IBancoDadosService
     {

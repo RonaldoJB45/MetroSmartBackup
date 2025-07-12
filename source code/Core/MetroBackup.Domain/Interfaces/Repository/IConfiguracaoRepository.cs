@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System;
 
-namespace MetroBackup.Domain.Interfaces
+namespace MetroBackup.Domain.Interfaces.Repository
 {
     public interface IConfiguracaoRepository
     {

@@ -1,4 +1,5 @@
-﻿using MetroBackup.Domain.Interfaces;
+﻿using MetroBackup.Domain.Interfaces.Services;
+using MetroBackup.Domain.Interfaces.Repository;
 
 namespace MetroBackup.ApplicationService.Backup
 {

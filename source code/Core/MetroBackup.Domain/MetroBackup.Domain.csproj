@@ -45,13 +45,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\Configuracao.cs" />
+    <Compile Include="Entities\UltimoBackup.cs" />
     <Compile Include="Enums\TipoConfiguracao.cs" />
-    <Compile Include="Interfaces\IBackupService.cs" />
-    <Compile Include="Interfaces\IBancoDadosService.cs" />
-    <Compile Include="Interfaces\IConfiguracaoRepository.cs" />
-    <Compile Include="Interfaces\IFtpService.cs" />
+    <Compile Include="Interfaces\Services\IBackupService.cs" />
+    <Compile Include="Interfaces\Services\IBancoDadosService.cs" />
+    <Compile Include="Interfaces\Repository\IConfiguracaoRepository.cs" />
+    <Compile Include="Interfaces\Services\IFtpService.cs" />
     <Compile Include="Interfaces\IProgressReporter.cs" />
-    <Compile Include="Interfaces\IRestoreService.cs" />
+    <Compile Include="Interfaces\Services\IRestoreService.cs" />
+    <Compile Include="Interfaces\Repository\IUltimoBackupRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ConfiguracaoService.cs" />
     <Compile Include="Services\ProgressReporter.cs" />
