@@ -53,6 +53,9 @@
     <Compile Include="Configuracoes\IConfiguracaoAppService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuracoes\ServidorDto.cs" />
+    <Compile Include="Restauracoes\IRestoreAppService.cs" />
+    <Compile Include="Restauracoes\RestoreAppService.cs" />
+    <Compile Include="Restauracoes\RestoreDto.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MetroBackup.Domain\MetroBackup.Domain.csproj">

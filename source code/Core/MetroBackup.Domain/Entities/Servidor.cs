@@ -7,13 +7,15 @@
             string porta,
             string usuario,
             string senha,
-            string nomeBanco = null)
+            string nomeBanco = null,
+            string caminhoBackup = null)
         {
             NomeBanco = nomeBanco ?? "information_schema.SCHEMATA";
             Endereco = endereco;
             Porta = porta;
             Usuario = usuario;
             Senha = senha;
+            CaminhoBackup = caminhoBackup;
         }
 
         public string NomeBanco { get; private set; }

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System;
 using MetroBackup.ApplicationService.Backup;
 using MetroBackup.Domain.Services;
+using MetroBackup.ApplicationService.Restauracoes;
 
 namespace MetroBackup
 {
@@ -35,9 +36,13 @@ namespace MetroBackup
             IFtpService ftpService = new FtpService(progressReporter);
             IBackupAppService backupAppService = new BackupAppService(backupService, ftpService, configuracaoRepository);
 
+            IRestoreService restoreService = new RestoreService(progressReporter);
+            IRestoreAppService restoreAppService = new RestoreAppService(restoreService);
+
             var frmPrincipal = new frmPrincipal(configuracaoAppService,
                                                 bancoDadosAppService,
                                                 backupAppService,
+                                                restoreAppService,
                                                 progressReporter);
 
             Application.Run(frmPrincipal);

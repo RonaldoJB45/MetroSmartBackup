@@ -55,6 +55,7 @@
             this.metroLabel11 = new MetroFramework.Controls.MetroLabel();
             this.txtUsuario = new MetroFramework.Controls.MetroTextBox();
             this.btnRestore = new MetroFramework.Controls.MetroButton();
+            this.lblMsg = new MetroFramework.Controls.MetroLabel();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             this.metroPanel1.SuspendLayout();
             this.metroPanel3.SuspendLayout();
@@ -87,6 +88,7 @@
             this.metroPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.metroPanel1.Controls.Add(this.lblMsg);
             this.metroPanel1.Controls.Add(this.lblBytesProcessados);
             this.metroPanel1.Controls.Add(this.lblPorcentagem);
             this.metroPanel1.Controls.Add(this.progressRestore);
@@ -101,7 +103,7 @@
             this.metroPanel1.HorizontalScrollbarSize = 10;
             this.metroPanel1.Location = new System.Drawing.Point(23, 100);
             this.metroPanel1.Name = "metroPanel1";
-            this.metroPanel1.Size = new System.Drawing.Size(591, 266);
+            this.metroPanel1.Size = new System.Drawing.Size(591, 273);
             this.metroPanel1.TabIndex = 33;
             this.metroPanel1.VerticalScrollbarBarColor = true;
             this.metroPanel1.VerticalScrollbarHighlightOnWheel = false;
@@ -148,9 +150,9 @@
             this.metroLabel4.AutoSize = true;
             this.metroLabel4.Location = new System.Drawing.Point(228, 13);
             this.metroLabel4.Name = "metroLabel4";
-            this.metroLabel4.Size = new System.Drawing.Size(130, 19);
+            this.metroLabel4.Size = new System.Drawing.Size(195, 19);
             this.metroLabel4.TabIndex = 40;
-            this.metroLabel4.Text = "2. Selecione o banco";
+            this.metroLabel4.Text = "2. Selecione o banco de destino";
             // 
             // metroPanel3
             // 
@@ -258,9 +260,9 @@
             this.metroLabel1.AutoSize = true;
             this.metroLabel1.Location = new System.Drawing.Point(14, 13);
             this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(171, 19);
+            this.metroLabel1.Size = new System.Drawing.Size(137, 19);
             this.metroLabel1.TabIndex = 37;
-            this.metroLabel1.Text = "1. Conecte ao MySql Server";
+            this.metroLabel1.Text = "1. Servidor de Destino";
             // 
             // pnlConexao
             // 
@@ -466,7 +468,6 @@
             this.btnRestore.BackColor = System.Drawing.Color.MediumSeaGreen;
             this.btnRestore.BackgroundImage = global::MetroSmartBackup.Properties.Resources.databaserestore2_25;
             this.btnRestore.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.btnRestore.Enabled = false;
             this.btnRestore.FontSize = MetroFramework.MetroButtonSize.Medium;
             this.btnRestore.FontWeight = MetroFramework.MetroButtonWeight.Light;
             this.btnRestore.Location = new System.Drawing.Point(539, 39);
@@ -480,11 +481,19 @@
             this.btnRestore.UseSelectable = true;
             this.btnRestore.Click += new System.EventHandler(this.btnRestore_Click);
             // 
+            // lblMsg
+            // 
+            this.lblMsg.AutoSize = true;
+            this.lblMsg.Location = new System.Drawing.Point(14, 251);
+            this.lblMsg.Name = "lblMsg";
+            this.lblMsg.Size = new System.Drawing.Size(0, 0);
+            this.lblMsg.TabIndex = 51;
+            // 
             // frmRestore
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(637, 389);
+            this.ClientSize = new System.Drawing.Size(637, 396);
             this.Controls.Add(this.metroPanel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.picLogo);
@@ -535,5 +544,6 @@
         private System.Windows.Forms.Label lblBytesProcessados;
         private System.Windows.Forms.Label lblPorcentagem;
         private MetroFramework.Controls.MetroProgressBar progressRestore;
+        private MetroFramework.Controls.MetroLabel lblMsg;
     }
 }

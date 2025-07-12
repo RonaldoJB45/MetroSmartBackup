@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.Infra.Data", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.ApplicationService", "Core\MetroBackup.ApplicationService\MetroBackup.ApplicationService.csproj", "{A7582989-6A26-4895-B190-A28D03579162}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.ApplicationService.Tests", "Core\MetroBackup.ApplicationService.Tests\MetroBackup.ApplicationService.Tests.csproj", "{FE578129-F8D4-461E-82F5-7D6E7833CEE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.Infra.Acl.Tests", "Core\MetroBackup.Infra.Acl.Tests\MetroBackup.Infra.Acl.Tests.csproj", "{141F06FD-89FA-4EFA-B81B-3CF82F60B349}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,10 +45,10 @@ Global
 		{A7582989-6A26-4895-B190-A28D03579162}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7582989-6A26-4895-B190-A28D03579162}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7582989-6A26-4895-B190-A28D03579162}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FE578129-F8D4-461E-82F5-7D6E7833CEE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FE578129-F8D4-461E-82F5-7D6E7833CEE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FE578129-F8D4-461E-82F5-7D6E7833CEE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FE578129-F8D4-461E-82F5-7D6E7833CEE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,7 +59,7 @@ Global
 		{F60F12BC-56F1-4935-9B4A-35745975C767} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
 		{47D447DB-ED4D-4BE9-AA7A-2A988756FFDA} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
 		{A7582989-6A26-4895-B190-A28D03579162} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
-		{FE578129-F8D4-461E-82F5-7D6E7833CEE0} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7871ED8C-0236-414A-B49A-A64C4FFE307C}

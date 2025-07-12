@@ -1,4 +1,5 @@
 ﻿using MetroBackup.ApplicationService.Configuracoes;
+using MetroBackup.ApplicationService.Restauracoes;
 using MetroBackup.ApplicationService.BancoDados;
 using MetroBackup.ApplicationService.Backup;
 using MetroBackup.Domain.Interfaces;
@@ -12,7 +13,6 @@ using System.Drawing;
 using System.Linq;
 using System.IO;
 using System;
-using System.Threading;
 
 namespace MetroBackup
 {
@@ -21,6 +21,7 @@ namespace MetroBackup
         private readonly IConfiguracaoAppService _configuracaoAppService;
         private readonly IBancoDadosAppService _bancoDadosAppService;
         private readonly IBackupAppService _backupAppService;
+        private readonly IRestoreAppService _restoreAppService;
         private readonly IProgressReporter _progressReporter;
 
         private Guid? ConfiguracaoSelecionadaId = null;
@@ -29,12 +30,14 @@ namespace MetroBackup
             IConfiguracaoAppService configuracaoAppService,
             IBancoDadosAppService bancoDadosAppService,
             IBackupAppService backupAppService,
+            IRestoreAppService restoreAppService,
             IProgressReporter progressReporter)
         {
             InitializeComponent();
             _configuracaoAppService = configuracaoAppService;
             _bancoDadosAppService = bancoDadosAppService;
             _backupAppService = backupAppService;
+            _restoreAppService = restoreAppService;
             _progressReporter = progressReporter;
         }
 
@@ -197,7 +200,10 @@ namespace MetroBackup
 
         private void btnRestore_Click(object sender, EventArgs e)
         {
-            using (frmRestore frm = new frmRestore())
+            using (frmRestore frm = new frmRestore(
+                _bancoDadosAppService,
+                _restoreAppService,
+                _progressReporter))
             {
                 frm.ShowDialog();
             }
