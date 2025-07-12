@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 using TestNotifyWindow;
 
 namespace MetroSmartBackup
@@ -11,12 +12,12 @@ namespace MetroSmartBackup
             SetDimensions(Width, Height);
         }
 
-        public void UpdateProgress(int progresso, string mensagem)
+        public void AtualizarProgresso(int progresso, string mensagem)
         {
-            if (progresso >= 100)
+            if (InvokeRequired)
             {
-                ClockState = ClockStates.Showing;
-                progresso = 100;
+                Invoke(new Action(() => AtualizarProgresso(progresso, mensagem)));
+                return;
             }
 
             metroProgressBar.Value = progresso;
@@ -30,7 +31,6 @@ namespace MetroSmartBackup
                 e.Cancel = false;
             else
                 e.Cancel = true;
-
         }
     }
 }

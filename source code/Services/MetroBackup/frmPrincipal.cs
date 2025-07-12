@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Linq;
 using System.IO;
 using System;
+using System.Threading;
 
 namespace MetroBackup
 {
@@ -163,15 +164,35 @@ namespace MetroBackup
 
             if (ConfiguracaoSelecionadaId.HasValue)
             {
-                ExibirJanelaNotificacao();
-
-                Task.Run(() =>
+                if (chkMostrarNotificacao.Checked)
                 {
-                    _backupAppService.Executar(new BackupDto { ConfiguracaoId = ConfiguracaoSelecionadaId.Value });
-                });
-            }
+                    frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
 
-            btnBackup.Enabled = true;
+                    _progressReporter.ProgressChanged += (progresso, mensagem) =>
+                    {
+                        _telaProgressBar.AtualizarProgresso((int)progresso, mensagem);
+                    };
+
+                    _telaProgressBar.Notify();
+
+                    Task.Run(() =>
+                    {
+                        try
+                        {
+                            _backupAppService.Executar(new BackupDto { ConfiguracaoId = ConfiguracaoSelecionadaId.Value });
+                            _telaProgressBar.Invoke(new Action(() => _telaProgressBar.Close()));
+                        }
+                        catch (Exception ex)
+                        {
+                            MetroMessageBox.Show(this, ex.Message);
+                        }
+                        finally
+                        {
+                            Invoke(new Action(() => btnBackup.Enabled = true));
+                        }
+                    });
+                }
+            }
         }
 
         private void btnRestore_Click(object sender, EventArgs e)
@@ -340,37 +361,6 @@ namespace MetroBackup
                 chk.UseVisualStyleBackColor = true;
                 chk.Style = MetroColorStyle.Orange;
                 mPnlDataBase.Controls.Add(chk);
-            }
-        }
-
-        private void ExibirJanelaNotificacao()
-        {
-            if (chkMostrarNotificacao.Checked)
-            {
-                frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
-
-                IProgressReporter.ProgressHandler handler;
-
-                handler = (progresso, mensagem) =>
-                {
-                    if (_telaProgressBar.InvokeRequired)
-                    {
-                        _telaProgressBar.Invoke((Action)(() => _telaProgressBar.UpdateProgress((int)progresso, mensagem)));
-                    }
-                    else
-                    {
-                        _telaProgressBar.UpdateProgress((int)progresso, mensagem);
-                    }
-                };
-
-                _progressReporter.ProgressChanged += handler;
-
-                _telaProgressBar.FormClosed += (s, e) =>
-                {
-                    _progressReporter.ProgressChanged -= handler;
-                };
-
-                _telaProgressBar.Notify();
             }
         }
 
