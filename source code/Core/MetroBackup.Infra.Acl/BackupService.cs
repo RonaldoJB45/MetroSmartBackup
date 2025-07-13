@@ -1,4 +1,5 @@
-﻿using MetroBackup.Domain.Interfaces.Services;
+﻿using MetroBackup.Domain.Interfaces.Repository;
+using MetroBackup.Domain.Interfaces.Services;
 using MetroBackup.Domain.Interfaces;
 using MetroBackup.Domain.Entities;
 using System;
@@ -10,10 +11,14 @@ namespace MetroBackup.Infra.Acl
     public class BackupService : IBackupService
     {
         private readonly IProgressReporter _progressReporter;
+        private readonly IUltimoBackupRepository _ultimoBackupRepository;
 
-        public BackupService(IProgressReporter progressReporter)
+        public BackupService(
+            IProgressReporter progressReporter, 
+            IUltimoBackupRepository ultimoBackupRepository)
         {
             _progressReporter = progressReporter;
+            _ultimoBackupRepository = ultimoBackupRepository;
         }
 
         public void Executar(Configuracao configuracao)
@@ -44,6 +49,13 @@ namespace MetroBackup.Infra.Acl
                     }
                 }
             }
+
+            SalvarUltimoBackup(configuracao.Id);
+        }
+        private void SalvarUltimoBackup(Guid configuracaoId)
+        {
+            var ultimoBackup = new UltimoBackup(configuracaoId);
+            _ultimoBackupRepository.Alterar(ultimoBackup);
         }
         private static string Compactar(byte[] backupData, string nomeBanco, string destino, string compactador)
         {

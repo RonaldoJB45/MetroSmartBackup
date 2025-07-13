@@ -24,9 +24,13 @@ namespace MetroBackup
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            string caminhoArquivo = Application.StartupPath + @"\config.json";
-            FileContext fileContext = new FileContext(caminhoArquivo);
-            IConfiguracaoRepository configuracaoRepository = new ConfiguracaoRepository(fileContext);
+            string caminhoArquivoConfiguracao = Application.StartupPath + @"\config.json";
+            string caminhoArquivoUltimosBackups = Application.StartupPath + @"\ultimos-backups.json";
+
+            FileContext fileConfiguracaoContext = new FileContext(caminhoArquivoConfiguracao);
+            FileContext fileUltimosBackupsContext = new FileContext(caminhoArquivoUltimosBackups);
+
+            IConfiguracaoRepository configuracaoRepository = new ConfiguracaoRepository(fileConfiguracaoContext);
             IConfiguracaoAppService configuracaoAppService = new ConfiguracaoAppService(configuracaoRepository);
 
             IBancoDadosService bancoDadosService = new BancoDadosService();
@@ -34,9 +38,14 @@ namespace MetroBackup
 
             IProgressReporter progressReporter = new ProgressReporter();
 
-            IBackupService backupService = new BackupService(progressReporter);
+            IUltimoBackupRepository ultimoBackupRepository = new UltimoBackupRepository(fileUltimosBackupsContext);
+            IBackupService backupService = new BackupService(progressReporter, ultimoBackupRepository);
             IFtpService ftpService = new FtpService(progressReporter);
-            IBackupAppService backupAppService = new BackupAppService(backupService, ftpService, configuracaoRepository);
+            IBackupAppService backupAppService = new BackupAppService(
+                backupService,
+                ftpService,
+                configuracaoRepository,
+                ultimoBackupRepository);
 
             IRestoreService restoreService = new RestoreService(progressReporter);
             IRestoreAppService restoreAppService = new RestoreAppService(restoreService);

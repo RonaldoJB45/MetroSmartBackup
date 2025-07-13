@@ -2,6 +2,7 @@
 using MetroBackup.ApplicationService.Restauracoes;
 using MetroBackup.ApplicationService.BancoDados;
 using MetroBackup.ApplicationService.Backup;
+using MetroBackup.ApplicationService.Backup.Dtos;
 using MetroBackup.Domain.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace MetroBackup
         private readonly CultureInfo cultureInfo = new CultureInfo("pt-BR");
         private Guid? ConfiguracaoSelecionadaId = null;
         private string diaAtual;
+        private int intervalo = 30000;
 
         public frmPrincipal(
             IConfiguracaoAppService configuracaoAppService,
@@ -56,18 +58,30 @@ namespace MetroBackup
 
         private void IniciarTimer()
         {
-            System.Timers.Timer timer = new System.Timers.Timer(30000);
+            System.Timers.Timer timer = new System.Timers.Timer(intervalo);
             timer.Elapsed += Timer_Tick;
             timer.Start();
         }
 
         private void Timer_Tick(object sender, System.Timers.ElapsedEventArgs e)
         {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(VerificarBackup));
+            }
+            else
+            {
+                VerificarBackup();
+            }
+        }
+        private void VerificarBackup()
+        {
             diaAtual = cultureInfo.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek);
             var configuracoesDto = _configuracaoAppService.ObterTodos();
 
             foreach (var configuracaoDto in configuracoesDto)
             {
+                BackupIntervaloHoras(configuracaoDto);
                 BackupHoraFixa(configuracaoDto);
             }
         }
@@ -85,12 +99,33 @@ namespace MetroBackup
                 {
                     Task.Run(() =>
                     {
-                        Invoke(new Action(() =>
-                        {
-                            Backup();
-                        }));
+                        Backup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
                     });
                 }
+            }
+        }
+
+        private void BackupIntervaloHoras(ConfiguracaoDto configuracaoDto)
+        {
+            if (configuracaoDto.UsarIntervaloHoras)
+            {
+                var ultimosBackupsDto = _backupAppService.ObterTodos();
+                var ultimoBackupDto = ultimosBackupsDto.FirstOrDefault(u => u.ConfiguracaoId == configuracaoDto.Id);
+
+                if (ultimoBackupDto == null)
+                {
+                    Backup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
+                    return;
+                }
+
+                DateTime dataHoraAtual = DateTime.Now;
+                DateTime dataHoraUltimoBackup = ultimoBackupDto.DataHora;
+                TimeSpan intervaloPermitido = TimeSpan.FromHours(configuracaoDto.ValorIntervaloHoras);
+                TimeSpan tempoDecorrido = dataHoraAtual - dataHoraUltimoBackup;
+                bool ultrapassou = tempoDecorrido > intervaloPermitido;
+
+                if (ultrapassou)
+                    Backup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
             }
         }
 
@@ -206,7 +241,8 @@ namespace MetroBackup
 
         private void btnBackup_Click(object sender, EventArgs e)
         {
-            Backup();
+            if (ConfiguracaoSelecionadaId.HasValue)
+                Backup(ConfiguracaoSelecionadaId.Value, chkMostrarNotificacao.Checked);
         }
 
         private void btnRestore_Click(object sender, EventArgs e)
@@ -224,40 +260,37 @@ namespace MetroBackup
 
         #region Metodos
 
-        private void Backup()
+        private void Backup(Guid configuracaoId, bool mostrarNotificacao = true)
         {
             btnBackup.Enabled = false;
 
-            if (ConfiguracaoSelecionadaId.HasValue)
+            if (mostrarNotificacao)
             {
-                if (chkMostrarNotificacao.Checked)
+                frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
+
+                _progressReporter.ProgressChanged += (progresso, mensagem) =>
                 {
-                    frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
+                    _telaProgressBar.AtualizarProgresso((int)progresso, mensagem);
+                };
 
-                    _progressReporter.ProgressChanged += (progresso, mensagem) =>
+                _telaProgressBar.Notify();
+
+                Task.Run(() =>
+                {
+                    try
                     {
-                        _telaProgressBar.AtualizarProgresso((int)progresso, mensagem);
-                    };
-
-                    _telaProgressBar.Notify();
-
-                    Task.Run(() =>
+                        _backupAppService.Executar(new BackupDto { ConfiguracaoId = configuracaoId });
+                        _telaProgressBar.Invoke(new Action(() => _telaProgressBar.Close()));
+                    }
+                    catch (Exception ex)
                     {
-                        try
-                        {
-                            _backupAppService.Executar(new BackupDto { ConfiguracaoId = ConfiguracaoSelecionadaId.Value });
-                            _telaProgressBar.Invoke(new Action(() => _telaProgressBar.Close()));
-                        }
-                        catch (Exception ex)
-                        {
-                            MetroMessageBox.Show(this, ex.Message);
-                        }
-                        finally
-                        {
-                            Invoke(new Action(() => btnBackup.Enabled = true));
-                        }
-                    });
-                }
+                        MetroMessageBox.Show(this, ex.Message);
+                    }
+                    finally
+                    {
+                        Invoke(new Action(() => btnBackup.Enabled = true));
+                    }
+                });
             }
         }
 

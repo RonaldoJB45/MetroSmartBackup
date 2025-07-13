@@ -4,10 +4,13 @@ namespace MetroBackup.Domain.Entities
 {
     public class UltimoBackup
     {
-        public UltimoBackup(Guid configuracaoId, Origem origem)
+        public UltimoBackup(
+            Guid configuracaoId, 
+            DateTime? dataHora = null,
+            Origem origem = Origem.Manual)
         {
             ConfiguracaoId = configuracaoId;
-            DataHora = DateTime.Now;
+            DataHora = dataHora ?? DateTime.Now;
             Origem = origem;
         }
 

@@ -35,7 +35,7 @@ namespace MetroBackup.Infra.Data
 
         public void Adicionar(Configuracao configuracao)
         {
-            var configuracoes = ObterTodos();
+            var configuracoes = ObterTodos().OrderBy(c => c.Descricao).ToList();
             configuracoes.Add(configuracao);
             _fileContext.SalvarConteudo(configuracoes);
         }
