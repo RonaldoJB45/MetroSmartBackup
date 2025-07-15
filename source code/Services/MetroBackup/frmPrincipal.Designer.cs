@@ -89,7 +89,9 @@
             this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nome = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mPnlPrincipal = new MetroFramework.Controls.MetroPanel();
+            this.metroLabel21 = new MetroFramework.Controls.MetroLabel();
             this.lstLog = new System.Windows.Forms.ListBox();
+            this.lstFila = new System.Windows.Forms.ListBox();
             this.metroLabel20 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel19 = new MetroFramework.Controls.MetroLabel();
             this.pnlConfigFtp = new MetroFramework.Controls.MetroPanel();
@@ -191,7 +193,7 @@
             this.chkSexta.AutoSize = true;
             this.chkSexta.Location = new System.Drawing.Point(15, 93);
             this.chkSexta.Name = "chkSexta";
-            this.chkSexta.Size = new System.Drawing.Size(79, 15);
+            this.chkSexta.Size = new System.Drawing.Size(78, 15);
             this.chkSexta.Style = MetroFramework.MetroColorStyle.Orange;
             this.chkSexta.TabIndex = 6;
             this.chkSexta.Text = "Sexta-feira";
@@ -224,7 +226,7 @@
             this.chkTerca.AutoSize = true;
             this.chkTerca.Location = new System.Drawing.Point(16, 30);
             this.chkTerca.Name = "chkTerca";
-            this.chkTerca.Size = new System.Drawing.Size(78, 15);
+            this.chkTerca.Size = new System.Drawing.Size(79, 15);
             this.chkTerca.Style = MetroFramework.MetroColorStyle.Orange;
             this.chkTerca.TabIndex = 3;
             this.chkTerca.Text = "Terça-feira";
@@ -305,7 +307,7 @@
             this.chkHoraFixa.AutoSize = true;
             this.chkHoraFixa.Location = new System.Drawing.Point(15, 90);
             this.chkHoraFixa.Name = "chkHoraFixa";
-            this.chkHoraFixa.Size = new System.Drawing.Size(73, 15);
+            this.chkHoraFixa.Size = new System.Drawing.Size(72, 15);
             this.chkHoraFixa.Style = MetroFramework.MetroColorStyle.Orange;
             this.chkHoraFixa.TabIndex = 6;
             this.chkHoraFixa.Text = "Hora Fixa";
@@ -907,7 +909,9 @@
             // 
             // mPnlPrincipal
             // 
+            this.mPnlPrincipal.Controls.Add(this.metroLabel21);
             this.mPnlPrincipal.Controls.Add(this.lstLog);
+            this.mPnlPrincipal.Controls.Add(this.lstFila);
             this.mPnlPrincipal.Controls.Add(this.metroLabel20);
             this.mPnlPrincipal.Controls.Add(this.metroLabel19);
             this.mPnlPrincipal.Controls.Add(this.pnlConfigFtp);
@@ -942,13 +946,30 @@
             this.mPnlPrincipal.VerticalScrollbarHighlightOnWheel = false;
             this.mPnlPrincipal.VerticalScrollbarSize = 10;
             // 
+            // metroLabel21
+            // 
+            this.metroLabel21.AutoSize = true;
+            this.metroLabel21.Location = new System.Drawing.Point(716, 296);
+            this.metroLabel21.Name = "metroLabel21";
+            this.metroLabel21.Size = new System.Drawing.Size(36, 19);
+            this.metroLabel21.TabIndex = 53;
+            this.metroLabel21.Text = "Logs";
+            // 
             // lstLog
             // 
             this.lstLog.FormattingEnabled = true;
-            this.lstLog.Location = new System.Drawing.Point(716, 226);
+            this.lstLog.Location = new System.Drawing.Point(716, 318);
             this.lstLog.Name = "lstLog";
-            this.lstLog.Size = new System.Drawing.Size(252, 160);
-            this.lstLog.TabIndex = 51;
+            this.lstLog.Size = new System.Drawing.Size(252, 69);
+            this.lstLog.TabIndex = 52;
+            // 
+            // lstFila
+            // 
+            this.lstFila.FormattingEnabled = true;
+            this.lstFila.Location = new System.Drawing.Point(716, 226);
+            this.lstFila.Name = "lstFila";
+            this.lstFila.Size = new System.Drawing.Size(252, 69);
+            this.lstFila.TabIndex = 51;
             // 
             // metroLabel20
             // 
@@ -989,7 +1010,7 @@
             this.chkUtilizarHostFtp.AutoSize = true;
             this.chkUtilizarHostFtp.Location = new System.Drawing.Point(18, 11);
             this.chkUtilizarHostFtp.Name = "chkUtilizarHostFtp";
-            this.chkUtilizarHostFtp.Size = new System.Drawing.Size(179, 15);
+            this.chkUtilizarHostFtp.Size = new System.Drawing.Size(180, 15);
             this.chkUtilizarHostFtp.Style = MetroFramework.MetroColorStyle.Orange;
             this.chkUtilizarHostFtp.TabIndex = 15;
             this.chkUtilizarHostFtp.Text = "Encaminhar para servidor FTP";
@@ -1234,6 +1255,7 @@
             this.Name = "frmPrincipal";
             this.Resizable = false;
             this.Style = MetroFramework.MetroColorStyle.Orange;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmPrincipal_FormClosing);
             this.Load += new System.EventHandler(this.frmPrincipal_Load);
             this.Resize += new System.EventHandler(this.frmPrincipal_Resize);
             this.mPnlDiasSemana.ResumeLayout(false);
@@ -1327,9 +1349,11 @@
         private System.Windows.Forms.TextBox txtPasswordFtp;
         private MetroFramework.Controls.MetroLabel metroLabel19;
         private MetroFramework.Controls.MetroLabel metroLabel20;
-        private System.Windows.Forms.ListBox lstLog;
+        private System.Windows.Forms.ListBox lstFila;
         private MetroFramework.Controls.MetroButton btnRestore;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;
         private System.Windows.Forms.DataGridViewTextBoxColumn nome;
+        private MetroFramework.Controls.MetroLabel metroLabel21;
+        private System.Windows.Forms.ListBox lstLog;
     }
 }

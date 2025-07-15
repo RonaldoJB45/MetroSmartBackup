@@ -29,6 +29,12 @@ namespace MetroBackup
         private Guid? ConfiguracaoSelecionadaId = null;
         private string diaAtual;
         private int intervalo = 30000;
+        private Timer _timer;
+        private readonly HashSet<Guid> _backupsEmExecucao = new HashSet<Guid>();
+
+        private readonly Queue<(Guid ConfiguracaoId, bool MostrarNotificacao)> _filaBackups = new Queue<(Guid ConfiguracaoId, bool MostrarNotificacao)>();
+        private bool _processandoFila = false;
+        private readonly object _lockFila = new object();
 
         public frmPrincipal(
             IConfiguracaoAppService configuracaoAppService,
@@ -54,79 +60,6 @@ namespace MetroBackup
             HabilitaBotoesPrincipais(Novo: true);
             PreencherListaConfiguracoes();
             IniciarTimer();
-        }
-
-        private void IniciarTimer()
-        {
-            System.Timers.Timer timer = new System.Timers.Timer(intervalo);
-            timer.Elapsed += Timer_Tick;
-            timer.Start();
-        }
-
-        private void Timer_Tick(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            if (InvokeRequired)
-            {
-                Invoke(new Action(VerificarBackup));
-            }
-            else
-            {
-                VerificarBackup();
-            }
-        }
-        private void VerificarBackup()
-        {
-            diaAtual = cultureInfo.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek);
-            var configuracoesDto = _configuracaoAppService.ObterTodos();
-
-            foreach (var configuracaoDto in configuracoesDto)
-            {
-                BackupIntervaloHoras(configuracaoDto);
-                BackupHoraFixa(configuracaoDto);
-            }
-        }
-
-        private void BackupHoraFixa(ConfiguracaoDto configuracaoDto)
-        {
-            var diaDaSemana = configuracaoDto.DiasDaSemana.Any(d => d.ToLower() == diaAtual.ToLower());
-
-            if (diaDaSemana)
-            {
-                string valorHoraFixa = DateTime.Parse(configuracaoDto.ValorHoraFixa).ToString("HH:mm");
-                string valorHoraAgora = DateTime.Now.ToString("HH:mm");
-
-                if (valorHoraFixa == valorHoraAgora)
-                {
-                    Task.Run(() =>
-                    {
-                        Backup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
-                    });
-                }
-            }
-        }
-
-        private void BackupIntervaloHoras(ConfiguracaoDto configuracaoDto)
-        {
-            if (configuracaoDto.UsarIntervaloHoras)
-            {
-                var ultimosBackupsDto = _backupAppService.ObterTodos();
-                var ultimoBackupDto = ultimosBackupsDto.FirstOrDefault(u => u.ConfiguracaoId == configuracaoDto.Id);
-
-                if (ultimoBackupDto == null)
-                {
-                    Backup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
-                    return;
-                }
-
-                DateTime dataHoraAtual = DateTime.Now;
-                DateTime dataHoraUltimoBackup = ultimoBackupDto.DataHora;
-                TimeSpan intervaloPermitido = TimeSpan.FromHours(configuracaoDto.ValorIntervaloHoras);
-                TimeSpan tempoDecorrido = dataHoraAtual - dataHoraUltimoBackup;
-                bool ultrapassou = tempoDecorrido > intervaloPermitido;
-
-                if (ultrapassou)
-                    Backup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
-            }
         }
 
         private void RenderizarLogo()
@@ -164,6 +97,71 @@ namespace MetroBackup
                 dgLista.Rows.Add(configuracao.Id.ToString(), configuracao.Descricao);
             }
         }
+
+        #region Timer
+
+        private void IniciarTimer()
+        {
+            _timer = new Timer();
+            _timer.Interval = intervalo;
+            _timer.Tick += Timer_Tick;
+            _timer.Start();
+        }
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            VerificarBackup();
+        }
+        private void VerificarBackup()
+        {
+            diaAtual = cultureInfo.DateTimeFormat.GetDayName(DateTime.Now.DayOfWeek);
+            var configuracoesDto = _configuracaoAppService.ObterTodos();
+
+            foreach (var configuracaoDto in configuracoesDto)
+            {
+                BackupIntervaloHoras(configuracaoDto);
+                BackupHoraFixa(configuracaoDto);
+            }
+        }
+        private void BackupHoraFixa(ConfiguracaoDto configuracaoDto)
+        {
+            var diaDaSemana = configuracaoDto.DiasDaSemana.Any(d => d.ToLower() == diaAtual.ToLower());
+
+            if (diaDaSemana)
+            {
+                string valorHoraFixa = DateTime.Parse(configuracaoDto.ValorHoraFixa).ToString("HH:mm");
+                string valorHoraAgora = DateTime.Now.ToString("HH:mm");
+
+                if (valorHoraFixa == valorHoraAgora)
+                {
+                    EnfileirarBackup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
+                }
+            }
+        }
+        private void BackupIntervaloHoras(ConfiguracaoDto configuracaoDto)
+        {
+            if (configuracaoDto.UsarIntervaloHoras)
+            {
+                var ultimosBackupsDto = _backupAppService.ObterTodos();
+                var ultimoBackupDto = ultimosBackupsDto.FirstOrDefault(u => u.ConfiguracaoId == configuracaoDto.Id);
+
+                if (ultimoBackupDto == null)
+                {
+                    EnfileirarBackup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
+                    return;
+                }
+
+                DateTime dataHoraAtual = DateTime.Now;
+                DateTime dataHoraUltimoBackup = ultimoBackupDto.DataHora;
+                TimeSpan intervaloPermitido = TimeSpan.FromHours(configuracaoDto.ValorIntervaloHoras);
+                TimeSpan tempoDecorrido = dataHoraAtual - dataHoraUltimoBackup;
+                bool ultrapassou = tempoDecorrido > intervaloPermitido;
+
+                if (ultrapassou)
+                    EnfileirarBackup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
+            }
+        }
+
+        #endregion
 
         #region Botoes Principais
 
@@ -242,7 +240,7 @@ namespace MetroBackup
         private void btnBackup_Click(object sender, EventArgs e)
         {
             if (ConfiguracaoSelecionadaId.HasValue)
-                Backup(ConfiguracaoSelecionadaId.Value, chkMostrarNotificacao.Checked);
+                EnfileirarBackup(ConfiguracaoSelecionadaId.Value, chkMostrarNotificacao.Checked);
         }
 
         private void btnRestore_Click(object sender, EventArgs e)
@@ -259,38 +257,140 @@ namespace MetroBackup
         #endregion
 
         #region Metodos
-
-        private void Backup(Guid configuracaoId, bool mostrarNotificacao = true)
+        private string ObterNomeConfiguracao(Guid id)
         {
-            btnBackup.Enabled = false;
-
-            if (mostrarNotificacao)
+            var configuracao = _configuracaoAppService.ObterPorId(id);
+            return configuracao?.Descricao ?? "Configuração desconhecida";
+        }
+        private void AtualizarFilaVisual()
+        {
+            if (lstFila.InvokeRequired)
             {
-                frmTelaAguardeProcessoProgressBar _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
+                lstFila.Invoke(new Action(AtualizarFilaVisual));
+                return;
+            }
 
-                _progressReporter.ProgressChanged += (progresso, mensagem) =>
+            lstFila.Items.Clear();
+
+            lock (_lockFila)
+            {
+                foreach (var item in _filaBackups)
                 {
-                    _telaProgressBar.AtualizarProgresso((int)progresso, mensagem);
-                };
+                    string nomeConfiguracao = ObterNomeConfiguracao(item.ConfiguracaoId);
+                    lstFila.Items.Add($"[⏳] {nomeConfiguracao}");
+                }
+            }
+        }
+        private void AdicionarStatus(string mensagem)
+        {
+            if (lstLog.InvokeRequired)
+            {
+                lstLog.Invoke(new Action(() => lstLog.Items.Add(mensagem)));
+            }
+            else
+            {
+                lstLog.Items.Add(mensagem);
+            }
+        }
+        private void EnfileirarBackup(Guid configuracaoId, bool mostrarNotificacao)
+        {
+            lock (_lockFila)
+            {
+                if (_filaBackups.Any(b => b.ConfiguracaoId == configuracaoId))
+                    return;
 
-                _telaProgressBar.Notify();
+                _filaBackups.Enqueue((configuracaoId, mostrarNotificacao));
+                AtualizarFilaVisual();
 
-                Task.Run(() =>
+                if (!_processandoFila)
                 {
-                    try
+                    _processandoFila = true;
+                    _ = ProcessarFilaAsync();
+                }
+            }
+        }
+        private async Task ProcessarFilaAsync()
+        {
+            while (true)
+            {
+                (Guid ConfiguracaoId, bool MostrarNotificacao) item;
+
+                lock (_lockFila)
+                {
+                    if (_filaBackups.Count == 0)
                     {
-                        _backupAppService.Executar(new BackupDto { ConfiguracaoId = configuracaoId });
-                        _telaProgressBar.Invoke(new Action(() => _telaProgressBar.Close()));
+                        _processandoFila = false;
+                        return;
                     }
-                    catch (Exception ex)
+
+                    item = _filaBackups.Dequeue();
+                    AtualizarFilaVisual();
+                }
+
+                await BackupAsync(item.ConfiguracaoId, item.MostrarNotificacao);
+            }
+        }
+        private async Task BackupAsync(Guid configuracaoId, bool mostrarNotificacao = true)
+        {
+            if (_backupsEmExecucao.Contains(configuracaoId))
+                return;
+
+            _backupsEmExecucao.Add(configuracaoId);
+            //btnBackup.Enabled = false;
+
+            frmTelaAguardeProcessoProgressBar _telaProgressBar = null;
+
+            string nomeConfiguracao = ObterNomeConfiguracao(configuracaoId);
+            AdicionarStatus($"[✔] Backup iniciado para: {nomeConfiguracao}");
+
+            try
+            {
+                if (mostrarNotificacao)
+                {
+                    _telaProgressBar = new frmTelaAguardeProcessoProgressBar();
+
+                    _progressReporter.ProgressChanged += (progresso, mensagem) =>
                     {
-                        MetroMessageBox.Show(this, ex.Message);
-                    }
-                    finally
-                    {
-                        Invoke(new Action(() => btnBackup.Enabled = true));
-                    }
+                        _telaProgressBar.AtualizarProgresso((int)progresso, mensagem);
+                    };
+
+                    _telaProgressBar.Notify();
+
+                    _telaProgressBar.Show();
+                }
+
+                await Task.Run(() =>
+                {
+                    _backupAppService.Executar(new BackupDto { ConfiguracaoId = configuracaoId });
                 });
+
+                AdicionarStatus($"[✔] Backup finalizado para: {nomeConfiguracao}");
+
+                if (mostrarNotificacao && _telaProgressBar != null)
+                {
+                    if (_telaProgressBar.InvokeRequired)
+                        _telaProgressBar.Invoke(new Action(() => _telaProgressBar.Close()));
+                    else
+                        _telaProgressBar.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                AdicionarStatus($"[X] Falha no backup: {nomeConfiguracao} - {ex.Message}");
+
+                if (InvokeRequired)
+                    Invoke(new Action(() => MetroMessageBox.Show(this, ex.Message)));
+                else
+                    MetroMessageBox.Show(this, ex.Message);
+            }
+            finally
+            {
+                //if (InvokeRequired)
+                //    Invoke(new Action(() => btnBackup.Enabled = true));
+                //else
+                //    btnBackup.Enabled = true;
+
+                _backupsEmExecucao.Remove(configuracaoId);
             }
         }
 
@@ -644,6 +744,15 @@ namespace MetroBackup
         {
             if (!Char.IsDigit(e.KeyChar) && e.KeyChar != (char)8)
                 e.Handled = true;
+        }
+
+        private void frmPrincipal_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_backupsEmExecucao.Any())
+            {
+                MetroMessageBox.Show(this, "Há backups em andamento. Aguarde a finalização antes de sair.", "Backup em andamento", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                e.Cancel = true;
+            }
         }
     }
 }
