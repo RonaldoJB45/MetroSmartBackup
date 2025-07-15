@@ -24,7 +24,6 @@ namespace MetroBackup.Infra.Acl
                         cmd.Connection = conn;
                         conn.Open();
 
-                        mb.ExportInfo.GetTotalRowsBeforeExport = true;
                         mb.ExportProgressChanged += (object sender, ExportProgressArgs e) =>
                         {
                             int progress = 0;
