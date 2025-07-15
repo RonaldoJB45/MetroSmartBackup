@@ -109,7 +109,7 @@ namespace MetroBackup
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
-            VerificarBackup();
+            Task.Run(() => VerificarBackup());
         }
         private void VerificarBackup()
         {
@@ -120,6 +120,7 @@ namespace MetroBackup
             {
                 BackupIntervaloHoras(configuracaoDto);
                 BackupHoraFixa(configuracaoDto);
+                ApagarArquivos(configuracaoDto);
             }
         }
         private void BackupHoraFixa(ConfiguracaoDto configuracaoDto)
@@ -158,6 +159,52 @@ namespace MetroBackup
 
                 if (ultrapassou)
                     EnfileirarBackup(configuracaoDto.Id.Value, configuracaoDto.MostrarJanelaNotificacao);
+            }
+        }
+
+        private void ApagarArquivos(ConfiguracaoDto configuracaoDto)
+        {
+            if (!configuracaoDto.UsarConfigApagar || configuracaoDto.QtdeDiasParaApagar <= 0)
+                return;
+
+            int dias = configuracaoDto.QtdeDiasParaApagar;
+
+            foreach (string destino in configuracaoDto.Destinos)
+            {
+                try
+                {
+                    if (!Directory.Exists(destino))
+                        continue;
+
+                    string[] arquivos = Directory.GetFiles(destino, "*.*", SearchOption.TopDirectoryOnly);
+
+                    foreach (string arquivo in arquivos)
+                    {
+                        try
+                        {
+                            FileInfo fileInfo = new FileInfo(arquivo);
+                            string extensao = fileInfo.Extension.ToLowerInvariant();
+                            bool extensaoPermitida = extensao == ".sql" || extensao == ".zip" || extensao == ".rar";
+
+                            if (!extensaoPermitida)
+                                continue;
+
+                            if (fileInfo.LastWriteTime < DateTime.Now.AddDays(-dias))
+                            {
+                                fileInfo.Delete();
+                                AdicionarStatus($"[🗑️] Arquivo apagado: {fileInfo.Name} (>{dias} dias)");
+                            }
+                        }
+                        catch (Exception exArquivo)
+                        {
+                            AdicionarStatus($"[Erro] Falha ao apagar arquivo: {arquivo} - {exArquivo.Message}");
+                        }
+                    }
+                }
+                catch (Exception exDestino)
+                {
+                    AdicionarStatus($"[Erro] Falha ao acessar destino: {destino} - {exDestino.Message}");
+                }
             }
         }
 
