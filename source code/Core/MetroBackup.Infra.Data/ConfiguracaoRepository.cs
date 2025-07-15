@@ -19,11 +19,14 @@ namespace MetroBackup.Infra.Data
         public List<Configuracao> ObterTodos()
         {
             var conteudo = _fileContext.ObterConteudo();
-
             if (conteudo == null) return new List<Configuracao>();
-
             var result = JsonConvert.DeserializeObject<List<Configuracao>>(Convert.ToString(conteudo));
-            return result;
+            return Ordernar(result);
+        }
+
+        private List<Configuracao> Ordernar(List<Configuracao> configuracoes)
+        {
+            return configuracoes.OrderBy(c => c.Descricao).ToList();
         }
 
         public Configuracao ObterPorId(Guid id)

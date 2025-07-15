@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Linq;
 using System.IO;
 using System;
+using System.Reflection;
 
 namespace MetroBackup
 {
@@ -30,8 +31,9 @@ namespace MetroBackup
         private string diaAtual;
         private int intervalo = 30000;
         private Timer _timer;
-        private readonly HashSet<Guid> _backupsEmExecucao = new HashSet<Guid>();
+        private bool exibirLogs = false;
 
+        private readonly HashSet<Guid> _backupsEmExecucao = new HashSet<Guid>();
         private readonly Queue<(Guid ConfiguracaoId, bool MostrarNotificacao)> _filaBackups = new Queue<(Guid ConfiguracaoId, bool MostrarNotificacao)>();
         private bool _processandoFila = false;
         private readonly object _lockFila = new object();
@@ -96,6 +98,8 @@ namespace MetroBackup
             {
                 dgLista.Rows.Add(configuracao.Id.ToString(), configuracao.Descricao);
             }
+
+            dgLista.ClearSelection();
         }
 
         #region Timer
@@ -180,9 +184,10 @@ namespace MetroBackup
 
                     foreach (string arquivo in arquivos)
                     {
+                        FileInfo fileInfo = new FileInfo(arquivo);
+
                         try
                         {
-                            FileInfo fileInfo = new FileInfo(arquivo);
                             string extensao = fileInfo.Extension.ToLowerInvariant();
                             bool extensaoPermitida = extensao == ".sql" || extensao == ".zip" || extensao == ".rar";
 
@@ -191,9 +196,20 @@ namespace MetroBackup
 
                             if (fileInfo.LastWriteTime < DateTime.Now.AddDays(-dias))
                             {
+                                if (fileInfo.IsReadOnly)
+                                    fileInfo.IsReadOnly = false;
+
                                 fileInfo.Delete();
                                 AdicionarStatus($"[🗑️] Arquivo apagado: {fileInfo.Name} (>{dias} dias)");
                             }
+                        }
+                        catch (UnauthorizedAccessException ex)
+                        {
+                            AdicionarStatus($"[Erro] Sem permissão para apagar: {fileInfo.FullName} - {ex.Message}");
+                        }
+                        catch (IOException ex)
+                        {
+                            AdicionarStatus($"[Erro] Arquivo em uso ou travado: {fileInfo.FullName} - {ex.Message}");
                         }
                         catch (Exception exArquivo)
                         {
@@ -330,13 +346,15 @@ namespace MetroBackup
         }
         private void AdicionarStatus(string mensagem)
         {
+            string _mensagem = DateTime.Now.ToString() + "   " + mensagem;
+
             if (lstLog.InvokeRequired)
             {
-                lstLog.Invoke(new Action(() => lstLog.Items.Add(mensagem)));
+                lstLog.Invoke(new Action(() => lstLog.Items.Add(_mensagem)));
             }
             else
             {
-                lstLog.Items.Add(mensagem);
+                lstLog.Items.Add(_mensagem);
             }
         }
         private void EnfileirarBackup(Guid configuracaoId, bool mostrarNotificacao)
@@ -398,6 +416,7 @@ namespace MetroBackup
 
                     _progressReporter.ProgressChanged += (progresso, mensagem) =>
                     {
+                        mensagem = nomeConfiguracao + " - " + mensagem;
                         _telaProgressBar.AtualizarProgresso((int)progresso, mensagem);
                     };
 
@@ -432,10 +451,10 @@ namespace MetroBackup
             }
             finally
             {
-                //if (InvokeRequired)
-                //    Invoke(new Action(() => btnBackup.Enabled = true));
-                //else
-                //    btnBackup.Enabled = true;
+                if (InvokeRequired)
+                    Invoke(new Action(() => btnBackup.Enabled = true));
+                else
+                    btnBackup.Enabled = true;
 
                 _backupsEmExecucao.Remove(configuracaoId);
             }
@@ -799,6 +818,22 @@ namespace MetroBackup
             {
                 MetroMessageBox.Show(this, "Há backups em andamento. Aguarde a finalização antes de sair.", "Backup em andamento", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 e.Cancel = true;
+            }
+        }
+
+        private void lblVisualizarLogs_Click(object sender, EventArgs e)
+        {
+            exibirLogs = !exibirLogs;
+
+            if (exibirLogs)
+            {
+                Size = new Size(1204, 731);
+                lblVisualizarLogs.Text = "Esconder Logs";
+            }
+            else
+            {
+                Size = new Size(1204, 531);
+                lblVisualizarLogs.Text = "Visualizar Logs";
             }
         }
     }
