@@ -1,9 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup", "MetroBackup\MetroBackup.csproj", "{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup", "Services\MetroBackup\MetroBackup.csproj", "{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{D5BE0DBC-35DA-4DF3-A2CF-6518DC0460D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1CF6FAAB-CE19-407C-A4DE-324D722336BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.Domain", "Core\MetroBackup.Domain\MetroBackup.Domain.csproj", "{ED5F7425-5577-46A6-BB55-F431BFE96F5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.Infra.Acl", "Core\MetroBackup.Infra.Acl\MetroBackup.Infra.Acl.csproj", "{F60F12BC-56F1-4935-9B4A-35745975C767}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.Infra.Data", "Core\MetroBackup.Infra.Data\MetroBackup.Infra.Data.csproj", "{47D447DB-ED4D-4BE9-AA7A-2A988756FFDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.ApplicationService", "Core\MetroBackup.ApplicationService\MetroBackup.ApplicationService.csproj", "{A7582989-6A26-4895-B190-A28D03579162}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetroBackup.Infra.Acl.Tests", "Core\MetroBackup.Infra.Acl.Tests\MetroBackup.Infra.Acl.Tests.csproj", "{141F06FD-89FA-4EFA-B81B-3CF82F60B349}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +29,39 @@ Global
 		{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED5F7425-5577-46A6-BB55-F431BFE96F5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED5F7425-5577-46A6-BB55-F431BFE96F5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED5F7425-5577-46A6-BB55-F431BFE96F5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED5F7425-5577-46A6-BB55-F431BFE96F5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F60F12BC-56F1-4935-9B4A-35745975C767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F60F12BC-56F1-4935-9B4A-35745975C767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F60F12BC-56F1-4935-9B4A-35745975C767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F60F12BC-56F1-4935-9B4A-35745975C767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47D447DB-ED4D-4BE9-AA7A-2A988756FFDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47D447DB-ED4D-4BE9-AA7A-2A988756FFDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47D447DB-ED4D-4BE9-AA7A-2A988756FFDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47D447DB-ED4D-4BE9-AA7A-2A988756FFDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7582989-6A26-4895-B190-A28D03579162}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7582989-6A26-4895-B190-A28D03579162}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7582989-6A26-4895-B190-A28D03579162}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7582989-6A26-4895-B190-A28D03579162}.Release|Any CPU.Build.0 = Release|Any CPU
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DC0AECE6-1BB0-41E6-ABC6-C9B17A7E5295} = {D5BE0DBC-35DA-4DF3-A2CF-6518DC0460D9}
+		{ED5F7425-5577-46A6-BB55-F431BFE96F5F} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
+		{F60F12BC-56F1-4935-9B4A-35745975C767} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
+		{47D447DB-ED4D-4BE9-AA7A-2A988756FFDA} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
+		{A7582989-6A26-4895-B190-A28D03579162} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
+		{141F06FD-89FA-4EFA-B81B-3CF82F60B349} = {1CF6FAAB-CE19-407C-A4DE-324D722336BE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7871ED8C-0236-414A-B49A-A64C4FFE307C}
 	EndGlobalSection
 EndGlobal
